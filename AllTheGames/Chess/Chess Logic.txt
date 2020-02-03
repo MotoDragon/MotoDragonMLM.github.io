@@ -1,0 +1,14 @@
+Steps for ooking for check
+Whites turn
+So check if any black pieces have placed the king in check
+Also need to make sure moving another piece will put your king in check
+So lets start with the obvious ones, the first thing
+1. Run through each piece on the board
+2. Test if its a black piece
+	a. If it is, run its available moves and mark those spots
+	b. If its not, skip it
+3.Check if the king is in a marked spots
+4.If it is the king is in check
+Now we wanna make sure pieces know if theyre putting the king in or out of check
+ugh
+This parts haaaaaard

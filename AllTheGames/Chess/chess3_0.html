@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+		<title>Chess... No Bots!</title>
+		<style>
+			body {background-color: BurlyWood;}
+			img   {width:50px;}
+			table, td, th {
+			border: 1px solid black;
+			border-collapse: collapse;}
+			.blackButton {background: transparent; border: none !important; font-size:0;}
+			.whiteButton {background: transparent; border: none !important; font-size:0;}
+			.neutralButton {background: transparent; border: none !important; font-size:0;}
+			.whiteButton:hover:enabled {background-color: rgba(255,255,255,0.4);}
+			.blackButton:hover:enabled {background-color: rgba(0,0,0,0.4);}
+			
+			ul {
+			  list-style-type: none;
+			  margin: 0;
+			  padding: 0;
+			  overflow: hidden;
+			  background-color: #333;
+			}
+
+			li {
+			  float: left;
+			}
+
+			li a {
+			  display: block;
+			  color: white;
+			  text-align: center;
+			  padding: 14px 16px;
+			  text-decoration: none;
+			}
+
+			li a:hover {
+			  background-color: #111;
+			}
+		</style>
+	</head>
+	<body>
+		<ul>
+		  <li><a class="active" href="#home">Home</a></li>
+		  <li><a href="#news">Chess</a></li>
+		  <li><a href="#contact">Tic Tac Toe</a></li>
+		  <li><a href="#about">Connect Four</a></li>
+		</ul>
+		<h1></h1>
+		<center>
+			<table>
+				<tr>
+					<td class="black" id="00" bgcolor="BurlyWood"> <button class="blackButton" id="b00" disabled onclick="move(0,0);"><img class="rookBlack" id="i00" src="rookBlack.png"> </button></td>
+					<td class="black" id="01"bgcolor="#663300"> <button class="blackButton" id="b01" disabled onclick="move(0,1);" > <img class="knightBlack" id="i01" src="knightBlack.png"> </button> </td>
+					<td class="black" id="02" bgcolor="BurlyWood"> <button class="blackButton" id="b02" disabled onclick="move(0,2);"> <img class="bishopBlack" id="i02" src="bishopBlack.png"> </button> </td>
+					<td class="black" id="03"bgcolor="#663300"> <button class="blackButton" id="b03" disabled onclick="move(0,3);"> <img class="queenBlack" id="i03" src="queenBlack.png"> </button> </td>
+					<td class="black" id="04" bgcolor="BurlyWood"> <button class="blackButton" id="b04" disabled onclick="move(0,4);"> <img class="kingBlack" id="i04" src="kingBlack.png"> </button> </td>
+					<td class="black" id="05"bgcolor="#663300"> <button class="blackButton" id="b05" disabled onclick="move(0,5);"> <img class="bishopBlack" id="i05" src="bishopBlack.png"> </button> </td>
+					<td class="black" id="06" bgcolor="BurlyWood"> <button class="blackButton" id="b06" disabled onclick="move(0,6);"> <img class="knightBlack" id="i06" src="knightBlack.png"> </button> </td>
+					<td class="black" id="07"bgcolor="#663300"> <button class="blackButton" id="b07" disabled onclick="move(0,7);"> <img class="rookBlack" id="i07" src="rookBlack.png"> </button> </td>
+				</tr>
+				<tr>
+					<td class="black" id="10"bgcolor="#663300"> <button class="blackButton" id="b10" disabled onclick="move(1,0);"> <img class="pawnBlack" id="i10" src="pawnBlack.png"> </button> </td>
+					<td class="black" id="11" bgcolor="BurlyWood"> <button class="blackButton" id="b11" disabled onclick="move(1,1);"> <img class="pawnBlack" id="i11" src="pawnBlack.png"> </button> </td>
+					<td class="black" id="12"bgcolor="#663300"> <button class="blackButton" id="b12" disabled onclick="move(1,2);"> <img class="pawnBlack" id="i12" src="pawnBlack.png"> </button> </td>
+					<td class="black" id="13" bgcolor="BurlyWood"> <button class="blackButton" id="b13" disabled onclick="move(1,3);"> <img class="pawnBlack" id="i13" src="pawnBlack.png"> </button> </td>
+					<td class="black" id="14"bgcolor="#663300"> <button class="blackButton" id="b14" disabled onclick="move(1,4);"> <img class="pawnBlack" id="i14" src="pawnBlack.png"> </button> </td>
+					<td class="black" id="15" bgcolor="BurlyWood"> <button class="blackButton" id="b15" disabled onclick="move(1,5);"> <img class="pawnBlack" id="i15" src="pawnBlack.png"> </button> </td>
+					<td class="black" id="16"bgcolor="#663300"> <button class="blackButton" id="b16" disabled onclick="move(1,6);"> <img class="pawnBlack" id="i16" src="pawnBlack.png"> </button> </td>
+					<td class="black" id="17" bgcolor="BurlyWood"> <button class="blackButton" id="b17" disabled onclick="move(1,7);"> <img class="pawnBlack" id="i17" src="pawnBlack.png"> </button> </td>
+				</tr>
+				<tr>
+					<td class="neutral" id="20" bgcolor="BurlyWood"> <button class="neutralButton" id="b20" disabled onclick="move(2,0);"> <img class="blank" id="i20" src="blank.png"> </button> </td>
+					<td class="neutral" id="21"bgcolor="#663300"> <button class="neutralButton" id="b21" disabled onclick="move(2,1);"> <img class="blank" id="i21" src="blank.png"> </button> </td>
+					<td class="neutral" id="22" bgcolor="BurlyWood"> <button class="neutralButton" id="b22" disabled onclick="move(2,2);"> <img class="blank" id="i22" src="blank.png"> </button> </td>
+					<td class="neutral" id="23"bgcolor="#663300"> <button class="neutralButton" id="b23" disabled onclick="move(2,3);"> <img class="blank" id="i23" src="blank.png"> </button> </td>
+					<td class="neutral" id="24" bgcolor="BurlyWood"> <button class="neutralButton" id="b24" disabled onclick="move(2,4);"> <img class="blank" id="i24" src="blank.png"> </button> </td>
+					<td class="neutral" id="25"bgcolor="#663300"> <button class="neutralButton" id="b25" disabled onclick="move(2,5);"> <img class="blank" id="i25" src="blank.png"> </button> </td>
+					<td class="neutral" id="26" bgcolor="BurlyWood"> <button class="neutralButton" id="b26" disabled onclick="move(2,6);"> <img class="blank" id="i26" src="blank.png"> </button> </td>
+					<td class="neutral" id="27"bgcolor="#663300"> <button class="neutralButton" id="b27" disabled onclick="move(2,7);"> <img class="blank" id="i27" src="blank.png"> </button> </td>
+				</tr>
+				<tr>
+					<td class="neutral" id="30"bgcolor="#663300"> <button class="neutralButton" id="b30" disabled onclick="move(3,0);"> <img class="blank" id="i30" src="blank.png"> </button> </td>
+					<td class="neutral" id="31" bgcolor="BurlyWood"> <button class="neutralButton" id="b31" disabled onclick="move(3,1);"> <img class="blank" id="i31" src="blank.png"> </button> </td>
+					<td class="neutral" id="32"bgcolor="#663300"> <button class="neutralButton" id="b32" disabled onclick="move(3,2);"> <img class="blank" id="i32" src="blank.png"> </button> </td>
+					<td class="neutral" id="33" bgcolor="BurlyWood"> <button class="neutralButton" id="b33" disabled onclick="move(3,3);"> <img class="blank" id="i33" src="blank.png"> </button> </td>
+					<td class="neutral" id="34"bgcolor="#663300"> <button class="neutralButton" id="b34" disabled onclick="move(3,4);"> <img class="blank" id="i34" src="blank.png"> </button> </td>
+					<td class="neutral" id="35" bgcolor="BurlyWood"> <button class="neutralButton" id="b35" disabled onclick="move(3,5);"> <img class="blank" id="i35" src="blank.png"> </button> </td>
+					<td class="neutral" id="36"bgcolor="#663300"> <button class="neutralButton" id="b36" disabled onclick="move(3,6);"> <img class="blank" id="i36" src="blank.png"> </button> </td>
+					<td class="neutral" id="37" bgcolor="BurlyWood"> <button class="neutralButton" id="b37" disabled onclick="move(3,7);"> <img class="blank" id="i37" src="blank.png"> </button> </td>
+				</tr>
+				<tr>
+					<td class="neutral" id="40" bgcolor="BurlyWood"> <button class="neutralButton" id="b40" disabled onclick="move(4,0);"> <img class="blank" id="i40" src="blank.png"> </button> </td>
+					<td class="neutral" id="41"bgcolor="#663300"> <button class="neutralButton" id="b41" disabled onclick="move(4,1);"> <img class="blank" id="i41" src="blank.png"> </button> </td>
+					<td class="neutral" id="42" bgcolor="BurlyWood"> <button class="neutralButton" id="b42" disabled onclick="move(4,2);"> <img class="blank" id="i42" src="blank.png"> </button> </td>
+					<td class="neutral" id="43"bgcolor="#663300"> <button class="neutralButton" id="b43" disabled onclick="move(4,3);"> <img class="blank" id="i43" src="blank.png"> </button> </td>
+					<td class="neutral" id="44" bgcolor="BurlyWood"> <button class="neutralButton" id="b44" disabled onclick="move(4,4);"> <img class="blank" id="i44" src="blank.png"> </button> </td>
+					<td class="neutral" id="45"bgcolor="#663300"> <button class="neutralButton" id="b45" disabled onclick="move(4,5);"> <img class="blank" id="i45" src="blank.png"> </button> </td>
+					<td class="neutral" id="46" bgcolor="BurlyWood"> <button class="neutralButton" id="b46" disabled onclick="move(4,6);"> <img class="blank" id="i46" src="blank.png"> </button> </td>
+					<td class="neutral" id="47"bgcolor="#663300"> <button class="neutralButton" id="b47" disabled onclick="move(4,7);"> <img class="blank" id="i47" src="blank.png"> </button> </td>
+				</tr>
+				<tr>
+					<td class="neutral" id="50"bgcolor="#663300"> <button class="neutralButton" id="b50" disabled onclick="move(5,0);"> <img class="blank" id="i50" src="blank.png"> </button> </td>
+					<td class="neutral" id="51" bgcolor="BurlyWood"> <button class="neutralButton" id="b51" disabled onclick="move(5,1);"> <img class="blank" id="i51" src="blank.png"> </button> </td>
+					<td class="neutral" id="52"bgcolor="#663300"> <button class="neutralButton" id="b52" disabled onclick="move(5,2);"> <img class="blank" id="i52" src="blank.png"> </button> </td>
+					<td class="neutral" id="53" bgcolor="BurlyWood"> <button class="neutralButton" id="b53" disabled onclick="move(5,3);"> <img class="blank" id="i53" src="blank.png"> </button> </td>
+					<td class="neutral" id="54"bgcolor="#663300"> <button class="neutralButton" id="b54" disabled onclick="move(5,4);"> <img class="blank" id="i54" src="blank.png"> </button> </td>
+					<td class="neutral" id="55" bgcolor="BurlyWood"> <button class="neutralButton" id="b55" disabled onclick="move(5,5);"> <img class="blank" id="i55" src="blank.png"> </button> </td>
+					<td class="neutral" id="56"bgcolor="#663300"> <button class="neutralButton" id="b56" disabled onclick="move(5,6);"> <img class="blank" id="i56" src="blank.png"> </button> </td>
+					<td class="neutral" id="57" bgcolor="BurlyWood"> <button class="neutralButton" id="b57" disabled onclick="move(5,7);"> <img class="blank" id="i57" src="blank.png"> </button> </td>
+				</tr>
+				<tr>
+					<td class="white" id="60" bgcolor="BurlyWood"> <button class="whiteButton" id="b60" onclick="move(6,0);"> <img class="pawnWhite" id="i60" src="pawnWhite.png"> </button> </td>
+					<td class="white" id="61"bgcolor="#663300"> <button class="whiteButton" id="b61" onclick="move(6,1);"> <img class="pawnWhite" id="i61" src="pawnWhite.png"> </button> </td>
+					<td class="white" id="62" bgcolor="BurlyWood"> <button class="whiteButton" id="b62" onclick="move(6,2);"> <img class="pawnWhite" id="i62" src="pawnWhite.png"> </button> </td>
+					<td class="white" id="63"bgcolor="#663300"> <button class="whiteButton" id="b63" onclick="move(6,3);"> <img class="pawnWhite" id="i63" src="pawnWhite.png"> </button> </td>
+					<td class="white" id="64" bgcolor="BurlyWood"> <button class="whiteButton" id="b64" onclick="move(6,4);"> <img class="pawnWhite" id="i64" src="pawnWhite.png"> </button> </td>
+					<td class="white" id="65"bgcolor="#663300"> <button class="whiteButton" id="b65" onclick="move(6,5);"> <img class="pawnWhite" id="i65" src="pawnWhite.png"> </button> </td>
+					<td class="white" id="66" bgcolor="BurlyWood"> <button class="whiteButton" id="b66" onclick="move(6,6);"> <img class="pawnWhite" id="i66" src="pawnWhite.png"> </button> </td>
+					<td class="white" id="67"bgcolor="#663300"> <button class="whiteButton" id="b67" onclick="move(6,7);"> <img class="pawnWhite" id="i67" src="pawnWhite.png"> </button> </td>
+				</tr>
+				<tr>
+					<td class="white" id="70"bgcolor="#663300"> <button class="whiteButton" id="b70" onclick="move(7,0);"> <img class="rookWhite" id="i70" src="rookWhite.png"> </button> </td>
+					<td class="white" id="71" bgcolor="BurlyWood"> <button class="whiteButton" id="b71" onclick="move(7,1);"> <img class="knightWhite" id="i71" src="knightWhite.png"> </button> </td>
+					<td class="white" id="72"bgcolor="#663300"> <button class="whiteButton" id="b72" onclick="move(7,2);"> <img class="bishopWhite" id="i72" src="bishopWhite.png"> </button> </td>
+					<td class="white" id="73" bgcolor="BurlyWood"> <button class="whiteButton" id="b73" onclick="move(7,3);"> <img class="queenWhite" id="i73" src="queenWhite.png"> </button> </td>
+					<td class="white" id="74"bgcolor="#663300"> <button class="whiteButton" id="b74" onclick="move(7,4);"> <img class="kingWhite" id="i74" src="kingWhite.png"> </button> </td>
+					<td class="white" id="75" bgcolor="BurlyWood"> <button class="whiteButton" id="b75" onclick="move(7,5);"> <img class="bishopWhite" id="i75" src="bishopWhite.png"> </button> </td>
+					<td class="white" id="76"bgcolor="#663300"> <button class="whiteButton" id="b76" onclick="move(7,6);"> <img class="knightWhite" id="i76" src="knightWhite.png"> </button> </td>
+					<td class="white" id="77" bgcolor="BurlyWood"> <button class="whiteButton" id="b77" onclick="move(7,7);"> <img class="rookWhite" id="i77" src="rookWhite.png"> </button> </td>
+				</tr>
+			</table>
+			<p id="console"><button onclick="testMode();">Test Mode</button></p>
+		</center>
+	</body>
+	<script>
+		var count = 1;
+		var cycle = 0;
+		var movingPiece = "none";
+		var movingColor = "white";
+		var prevRow = 8;
+		var prevCol = 8;
+		var whiteKingMoved = false;
+		var blackKingMoved = false;
+		var whiteRook0Moved = false;
+		var blackRook0Moved = false;
+		var whiteRook7Moved = false;
+		var blackRook7Moved = false;
+		var boardState = [
+			["rb","knb","bb","qb","kb","bb","knb","rb"],
+			["pb","pb" ,"pb","pb","pb","pb","pb" ,"pb"],
+			["e" ,"e"  ,"e" ,"e" ,"e" ,"e" ,"e"  ,"e" ],
+			["e" ,"e"  ,"e" ,"e" ,"e" ,"e" ,"e"  ,"e" ],
+			["e" ,"e"  ,"e" ,"e" ,"e" ,"e" ,"e"  ,"e" ],
+			["e" ,"e"  ,"e" ,"e" ,"e" ,"e" ,"e"  ,"e" ],
+			["pw","pw" ,"pw","pw","pw","pw","pw" ,"pw"],
+			["rw","knw","bw","qw","kw","bw","knw","rw"]
+		];
+		var markThese = [];
+		function testMode(){
+			for(i = 0; i < 8; i +=1){
+				document.getElementById("6" + i).className = "neutral";
+				document.getElementById("b6" + i).className = "neutralButton";
+				document.getElementById("b6" + i).disabled = true;
+				document.getElementById("i6" + i).src = "blank.png";
+				document.getElementById("1" + i).className = "neutral";
+				document.getElementById("b1" + i).className = "neutralButton";
+				document.getElementById("b1" + i).disabled = true;
+				document.getElementById("i1" + i).src = "blank.png";
+			}
+			var testAllButtons = document.getElementsByClassName("blackButton");
+			for(i = 0; i < testAllButtons.length; i+=1){
+				testAllButtons[i].disabled = false;
+			}
+		}
+		function move(row,col){
+			if(cycle == 0){
+				
+				whatMoves(row,col);
+				for(r = 0; r < markThese.length; r+=1){
+					highlightSlot(markThese[r][0],markThese[r][1]);
+				}
+				markThese = [];
+				prevRow = row;
+				prevCol = col;
+				cycle = 1;
+			}
+			else if(cycle == 1){
+				if(document.getElementById("" + row + col).className == "marked"){
+					document.getElementById("" + row + col).className = movingColor;
+					document.getElementById("b" + row + col).className = movingColor + "Button";
+					document.getElementById("i" + row + col).className = movingPiece;
+					document.getElementById("i" + row + col).src = movingPiece + ".png";
+					cleanSlotColor(row,col);
+					
+					document.getElementById("" + prevRow + prevCol).className = "neutral";
+					document.getElementById("b" + prevRow + prevCol).className = "neutralButton";
+					document.getElementById("b" + prevRow + prevCol).disabled = true;
+					document.getElementById("i" + prevRow + prevCol).className = "blank";
+					document.getElementById("i" + prevRow + prevCol).src = "blank.png";
+					if(movingPiece == "kingWhite"){
+						whiteKingMoved = true;
+					}
+					else if(movingPiece == "kingBlack"){
+						blackKingMoved = true;
+					}
+					else if(movingPiece == "rookWhite"){
+						if(prevCol == 0){
+							whiteRook0Moved = true;
+						}
+						else if(prevCol == 7){
+							whiteRook7Moved = true;
+						}
+					}
+					else if(movingPiece == "rookBlack"){
+						if(prevCol == 0){
+							blackRook0Moved = true;
+						}
+						else if(prevCol == 7){
+							blackRook7Moved = true;
+						}
+					}
+					
+					for(r = 0; r <8; r+=1){
+						for(c = 0; c < 8; c+=1){
+							if(document.getElementById("" + r + c).className == "marked"){
+								if(document.getElementById("b" + r + c).className == "blackButton"){
+									document.getElementById("" + r + c).className = "black";
+								}
+								else if(document.getElementById("b" + r + c).className == "whiteButton"){
+									document.getElementById("" + r + c).className = "white";
+								}
+								else if(document.getElementById("b" + r + c).className == "neutralButton"){
+									document.getElementById("" + r + c).className = "neutral";
+									document.getElementById("b" + r + c).disabled = true;
+								}
+								cleanSlotColor(r,c);
+							}
+						}
+					}
+					var disableButtons = document.getElementsByClassName(movingColor + "Button");
+					for(i = 0; i < disableButtons.length; i+=1){
+						disableButtons[i].disabled = true;
+					}
+					if(movingColor == "white"){movingColor = "black";}
+					else{movingColor = "white";}
+					disableButtons = document.getElementsByClassName(movingColor + "Button");
+					for(i = 0; i < disableButtons.length; i+=1){
+						disableButtons[i].disabled = false;
+					}
+					cycle = 0;
+				}
+				else{
+					for(r = 0; r <8; r+=1){
+						for(c = 0; c < 8; c+=1){
+							if(document.getElementById("" + r + c).className == "marked"){
+								if(document.getElementById("b" + r + c).className == "blackButton"){
+									document.getElementById("" + r + c).className = "black";
+								}
+								else if(document.getElementById("b" + r + c).className == "whiteButton"){
+									document.getElementById("" + r + c).className = "white";
+								}
+								else if(document.getElementById("b" + r + c).className == "neutralButton"){
+									document.getElementById("" + r + c).className = "neutral";
+									document.getElementById("b" + r + c).disabled = true;
+								}
+								cleanSlotColor(r,c);
+							}
+						}
+						whatMoves(row,col);
+						for(r = 0; r < markThese.length; r+=1){
+							highlightSlot(markThese[r][0],markThese[r][1]);
+						}
+						markThese = [];
+						prevRow = row;
+						prevCol = col;
+						cycle = 1;
+					}
+					
+				}
+			}
+		}
+		
+		function checkChecker(boardStateToTest, movingColorToTest){
+			for(r = 0; r < 8; r+=1){
+				for(c = 0; c < 8; c+=1){
+					
+				}
+			}
+		}
+		
+		function highlightSlot(hRow, hCol){
+			document.getElementById("" + hRow + hCol).className = "marked";
+			document.getElementById("" + hRow + hCol).style.backgroundColor = "#6495ED";
+			document.getElementById("b" + hRow + hCol).disabled = false;
+		}
+		
+		function cleanSlotColor(cleanRow, cleanCol){
+			if(cleanRow % 2 == cleanCol % 2){
+				document.getElementById("" + cleanRow + cleanCol).style.backgroundColor = "BurlyWood";
+			}
+			else{
+				document.getElementById("" + cleanRow + cleanCol).style.backgroundColor = "#663300";
+			}
+		}
+		
+		function whatMoves(row, col){
+			if(document.getElementById("i" + row + col).className == "pawnWhite"){
+				movingPiece = "pawnWhite";
+				pawnMoves("white", row, col);
+			}
+			else if(document.getElementById("i" + row + col).className == "pawnBlack"){
+				movingPiece = "pawnBlack";
+				pawnMoves("black", row, col);
+			}	
+			else if(document.getElementById("i" + row + col).className == "rookWhite"){
+				movingPiece = "rookWhite";
+				rookMoves("white", row, col);
+			}
+			else if(document.getElementById("i" + row + col).className == "rookBlack"){
+				movingPiece = "rookBlack";
+				rookMoves("black", row, col);
+			}
+			else if(document.getElementById("i" + row + col).className == "knightWhite"){
+				movingPiece = "knightWhite";
+				knightMoves("white", row, col);
+			}
+			else if(document.getElementById("i" + row + col).className == "knightBlack"){
+				movingPiece = "knightBlack";
+				knightMoves("black", row, col);
+			}
+			else if(document.getElementById("i" + row + col).className == "bishopWhite"){
+				movingPiece = "bishopWhite";
+				bishopMoves("white", row, col);
+			}	
+			else if(document.getElementById("i" + row + col).className == "bishopBlack"){
+				movingPiece = "bishopBlack";
+				bishopMoves("black", row, col);
+			}
+			else if(document.getElementById("i" + row + col).className == "queenWhite"){
+				movingPiece = "queenWhite";
+				queenMoves("white", row, col);
+			}
+			else if(document.getElementById("i" + row + col).className == "queenBlack"){
+				movingPiece = "queenBlack";
+				queenMoves("black", row, col);
+			}
+			else if(document.getElementById("i" + row + col).className == "kingWhite"){
+				movingPiece = "kingWhite";
+				kingMoves("white", row, col);
+			}
+			else if(document.getElementById("i" + row + col).className == "kingBlack"){
+				movingPiece = "kingBlack";
+				kingMoves("black", row, col);
+			}				
+		}
+		
+		function pawnMoves(color, row, col){
+			var distance = 3;
+			if(color == "white"){
+				opposite = "black";
+				count = 1;
+				if(row != 6){distance = 2;}
+				while((row - count) >= 0 && count < distance){
+					if(document.getElementById("" + (row - count) + col).className == color){
+						break;
+					}
+					else if(document.getElementById("" + (row - count) + col).className == opposite){
+						break;
+					}
+					else{
+						markThese.push([row - count, col]);
+					}
+					count += 1;
+				}
+				if(row != 0 && col != 0){
+					if(document.getElementById("" + (row - 1) + (col - 1)).className == opposite){
+						markThese.push([row - 1, col - 1]);
+					}
+				}
+				if(row != 0 && col != 7){
+					if(document.getElementById("" + (row - 1) + (col + 1)).className == opposite){
+						markThese.push([row - 1, col + 1]);
+					}
+				}
+			}
+			else if(color == "black"){
+				opposite = "white";
+				count = 1;
+				if(row != 1){distance = 2;}
+				while((row + count) <= 7 && count < distance){
+					if(document.getElementById("" + (row + count) + col).className == color){
+						break;
+					}
+					else if(document.getElementById("" + (row + count) + col).className == opposite){
+						break;
+					}
+					else{
+						markThese.push([row + count, col]);
+					}
+					count += 1;
+				}
+				if(row !=7  && col != 0){
+					if(document.getElementById("" + (row + 1) + (col - 1)).className == opposite){
+						markThese.push([row + 1, col - 1]);
+					}
+				}
+				if(row != 7 && col != 7){
+					if(document.getElementById("" + (row + 1) + (col + 1)).className == opposite){
+						markThese.push([row + 1, col + 1]);
+					}
+				}
+			}
+		}
+		
+		function rookMoves(color, row, col){
+			if(color == "white"){opposite = "black";}
+			else{opposite = "white";}
+			count = 1;
+			while((row - count) >= 0){ 
+				if(document.getElementById("" + (row - count) + col).className == color){
+					break;
+				}
+				else if(document.getElementById("" + (row - count) + col).className == opposite){
+					markThese.push([row - count, col]);
+					break;
+				}
+				else{
+					markThese.push([row - count, col]);
+				}
+				count += 1;
+			}
+			count = 1;
+			while((row + count) <= 7){ 
+				if(document.getElementById("" + (row + count) + col).className == color){
+					break;
+				}
+				else if(document.getElementById("" + (row + count) + col).className == opposite){
+					markThese.push([row + count, col]);
+					break;
+				}
+				else{
+					markThese.push([row + count, col]);
+				}
+				count += 1;
+			}
+			count = 1;
+			while((col - count) >= 0){ 
+				if(document.getElementById("" + row + (col - count)).className == color){
+					break;
+				}
+				else if(document.getElementById("" + row + (col - count)).className == opposite){
+					markThese.push([row, col - count]);
+					break;
+				}
+				else{
+					markThese.push([row, col - count]);
+				}
+				count += 1;
+			}
+			count = 1;
+			while((col + count) <= 7){ 
+				if(document.getElementById("" + row + (col + count)).className == color){
+					break;
+				}
+				else if(document.getElementById("" + row + (col + count)).className == opposite){
+					markThese.push([row, col + count]);
+					break;
+				}
+				else{
+					markThese.push([row, col + count]);
+				}
+				count += 1;
+			}
+		}
+		
+		function knightMoves(color, row, col){
+			if(color == "white"){opposite = "black";}
+			else{opposite = "white";}
+			
+			if(row - 2 >= 0){
+				if(col - 1 >= 0){
+					if(document.getElementById("" + (row - 2) + (col - 1)).className != color){
+						markThese.push([row - 2, col - 1]);
+					}
+				}
+				if(col + 1 <= 7){
+					if(document.getElementById("" + (row - 2) + (col + 1)).className != color){
+						markThese.push([row - 2, col + 1]);
+					}
+				}
+			}
+			if(row + 2 <= 7){
+				if(col - 1 >= 0){
+					if(document.getElementById("" + (row + 2) + (col - 1)).className != color){
+						markThese.push([row + 2, col - 1]);
+					}
+				}
+				if(col + 1 <= 7){
+					if(document.getElementById("" + (row + 2) + (col + 1)).className != color){
+						markThese.push([row + 2, col + 1]);
+					}
+				}
+			}
+			if(row - 1 >= 0){
+				if(col - 2 >= 0){
+					if(document.getElementById("" + (row - 1) + (col - 2)).className != color){
+						markThese.push([row - 1, col - 2]);
+					}
+				}
+				if(col + 2 <= 7){
+					if(document.getElementById("" + (row - 1) + (col + 2)).className != color){
+						markThese.push([row - 1, col + 2]);
+					}
+				}
+			}
+			if(row + 1 <= 7){
+				if(col - 2 >= 0){
+					if(document.getElementById("" + (row + 1) + (col - 2)).className != color){
+						markThese.push([row + 1, col - 2]);
+					}
+				}
+				if(col + 2 <= 7){
+					if(document.getElementById("" + (row + 1) + (col + 2)).className != color){
+						markThese.push([row + 1, col + 2]);
+					}
+				}
+			}
+		}
+		
+		function bishopMoves(color,row,col){
+			if(color == "white"){opposite = "black";}
+			else{opposite = "white";}
+			count = 1;
+			while((row - count) >= 0 && (col - count) >= 0){
+				if(document.getElementById("" + (row - count) + (col - count)).className == color){
+					break;
+				}
+				else if(document.getElementById("" + (row - count) + (col - count)).className == opposite){
+					markThese.push([row - count, col - count]);
+					break;
+				}
+				else{
+					markThese.push([row - count, col - count]);
+				}
+				count += 1;
+			}
+			count = 1;
+			while((row - count) >= 0 && (col + count) <= 7){
+				if(document.getElementById("" + (row - count) + (col + count)).className == color){
+					break;
+				}
+				else if(document.getElementById("" + (row - count) + (col + count)).className == opposite){
+					markThese.push([row - count, col + count]);
+					break;
+				}
+				else{
+					markThese.push([row - count, col + count]);
+				}
+				count += 1;
+			}
+			count = 1;
+			while((row + count) <= 7 && (col + count) <= 7){
+				if(document.getElementById("" + (row + count) + (col + count)).className == color){
+					break;
+				}
+				else if(document.getElementById("" + (row + count) + (col + count)).className == opposite){
+					markThese.push([row + count, col + count]);
+					break;
+				}
+				else{
+					markThese.push([row + count, col + count]);
+				}
+				count += 1;
+			}
+			count = 1;
+			while((row + count) <= 7 && (col - count) >= 0){
+				if(document.getElementById("" + (row + count) + (col - count)).className == color){
+					break;
+				}
+				else if(document.getElementById("" + (row + count) + (col - count)).className == opposite){
+					markThese.push([row + count, col - count]);
+					break;
+				}
+				else{
+					markThese.push([row + count, col - count]);
+				}
+				count += 1;
+			}
+		}
+		
+		function queenMoves(color,row,col){
+			bishopMoves(color,row,col);
+			rookMoves(color,row,col);
+		}
+		
+		function kingMoves(color,row,col){
+			if(col != 0 && document.getElementById("" + row + (col - 1)).className != color){markThese.push([row, col - 1]);}
+			if(row != 0 && col != 0 && document.getElementById("" + (row - 1) + (col - 1)).className != color){markThese.push([row - 1, col - 1]);}
+			if(row != 0 && document.getElementById("" + (row - 1) + col).className != color){markThese.push([row - 1, col]);}
+			if(row != 0 && col != 7 && document.getElementById("" + (row - 1) + (col + 1)).className != color){markThese.push([row - 1, col + 1]);}
+			if(col != 7 && document.getElementById("" + row + (col + 1)).className != color){markThese.push([row, col + 1]);}
+			if(row != 7 && col != 7 && document.getElementById("" + (row + 1) + (col + 1)).className != color){markThese.push([row + 1, col + 1]);}
+			if(row != 7 && document.getElementById("" + (row + 1) + (col)).className != color){markThese.push([row + 1, col]);}
+			if(row != 7 && col != 0 && document.getElementById("" + (row + 1) + (col - 1)).className != color){markThese.push([row + 1, col - 1]);}
+			//if(color == "white" && !whiteKingMoved){
+				//if(!whiteRook0Moved && document.getElementById("71").className == document.getElementById("72").className && document.getElementById("72").className == document.getElementById("73").className && document.getElementById("73").className == "neutral"){
+					//markThese.push(
+				//}
+			//}
+		}
+		
+	</script>
+</html>
