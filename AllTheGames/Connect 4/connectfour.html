@@ -45,7 +45,7 @@
 <title>Connect 4</title>
 <body>
 	<ul>
-	  <li><a class="active" href="../Matts_Games.html">Home</a></li>
+	  <li><a class="active" href="../../index.html">Home</a></li>
 	  <li><a href="../Chess/chess2_0.html">Chess</a></li>
 	  <li><a href="../TicTacToe/TicTacToeRemade.html">Tic Tac Toe</a></li>
 	  <li><a href="../Connect 4/connectfour.html">Connect Four</a></li>
@@ -53,16 +53,21 @@
 	<center>
 
 	<h1>Connect Four</h1>
-	<h2 id = "console">Black's Turn</h2>
+	
+	<p id = "console">
+		<button onclick="players = 1; start();">1 Player</button>
+		<button onclick="players = 2; start();">2 Players</button>
+	</p>
+	
 	<table cellpadding="1">
 		<tr>
-			<th><button class = "dropper" onclick = "drop(0);" height="20" width="50">Drop Here</button></th>
-			<th><button class = "dropper" onclick = "drop(1);" height="20">Drop Here</button></th>
-			<th><button class = "dropper" onclick = "drop(2);" height="20">Drop Here</button></th>
-			<th><button class = "dropper" onclick = "drop(3);" height="20">Drop Here</button></th>
-			<th><button class = "dropper" onclick = "drop(4);" height="20">Drop Here</button></th>
-			<th><button class = "dropper" onclick = "drop(5);" height="20">Drop Here</button></th>
-			<th><button class = "dropper" onclick = "drop(6);" height="20">Drop Here</button></th>
+			<th><button class = "dropper" disabled = "true" onclick = "playerMoves(0);" height="20">Drop Here</button></th>
+			<th><button class = "dropper" disabled = "true" onclick = "playerMoves(1);" height="20">Drop Here</button></th>
+			<th><button class = "dropper" disabled = "true" onclick = "playerMoves(2);" height="20">Drop Here</button></th>
+			<th><button class = "dropper" disabled = "true" onclick = "playerMoves(3);" height="20">Drop Here</button></th>
+			<th><button class = "dropper" disabled = "true" onclick = "playerMoves(4);" height="20">Drop Here</button></th>
+			<th><button class = "dropper" disabled = "true" onclick = "playerMoves(5);" height="20">Drop Here</button></th>
+			<th><button class = "dropper" disabled = "true" onclick = "playerMoves(6);" height="20">Drop Here</button></th>
 		</tr>
 		<tr>
 			<td id = "00"><center><img class = "slot" src="blank.png"></center></td>
@@ -119,9 +124,11 @@
 			<td id = "56"><center><img class = "slot" src="blank.png"></center></td>
 		</tr>
 	</table>
+	<p id = "log"></p>
 	<p><button class = "restart" onclick = "restart();">Restart</button>
 </center>
 <script>
+var players = 0;
 var different = document.getElementsByClassName("dropper");
 var allSlots = document.getElementsByClassName("slot");
 var black = true;
@@ -129,6 +136,19 @@ var blankPic = '<center><img class = "slot" src = "blank.png"></center>';
 var turn = 1;
 var board = 
 [[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0]];
+var simBoard = 
+[[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0]];
+function start(){
+	for(i = 0; i < 7; i+=1){
+			different[i].disabled = false;
+	}
+	if(players == 1){
+		blackBot();
+	}
+	else{
+		document.getElementById("console").innerHTML = "Black's Turn";
+	}
+}
 function drop(col){
 	if(board[0][col] == 0){
 		if(black){
@@ -158,7 +178,7 @@ function drop(col){
 	}
 	if(test4win(board)){
 		document.getElementById("console").innerHTML = "Winner!";
-		for(i = 0; i < 9; i+=1){
+		for(i = 0; i < 7; i+=1){
 			different[i].disabled = true;
 		}
 	}
@@ -167,31 +187,58 @@ function drop(col){
 	}
 	turn += 1;
 }
-function test4win(board){
+
+function playerMoves(col){
+	drop(col);
+	if(players == 1 && !test4win(board)){
+		blackBot();
+	}
+}
+
+function simDrop(col, simBlack){
+	if(simBoard[0][col] == 0){
+		if(simBlack){
+			tracker = 1;
+		}
+		else{
+			tracker = 2;
+		}
+		simBoard[0][col] = tracker;
+		for(i = 1; i<6; i+=1){
+			if(simBoard[i][col] == 0){
+			simBoard[i-1][col] = 0;
+			simBoard[i][col] = tracker;
+			}	
+			else{break};
+		}
+		
+	}
+}
+function test4win(testBoard){
 	for(r = 5; r > -1; r-=1){
 		for(c = 0; c < 4; c+=1){
-			if(board[r][c] != 0 & (board[r][c] == board[r][c + 1]) & (board[r][c] == board[r][c + 2]) & (board[r][c] == board[r][c + 3])){
+			if(testBoard[r][c] != 0 & (testBoard[r][c] == testBoard[r][c + 1]) & (testBoard[r][c] == testBoard[r][c + 2]) & (testBoard[r][c] == testBoard[r][c + 3])){
 				return true;
 			}
 		}			
 	}
 	for(c = 0; c<7; c+=1){
 		for(r = 5; r > 2; r-=1){
-			if(board[r][c] != 0 & (board[r][c] == board[r - 1][c]) & (board[r][c] == board[r - 2][c]) & (board[r][c] == board[r - 3][c])){
+			if(testBoard[r][c] != 0 & (testBoard[r][c] == testBoard[r - 1][c]) & (testBoard[r][c] == testBoard[r - 2][c]) & (testBoard[r][c] == testBoard[r - 3][c])){
 				return true;
 			}
 		}
 	}
 	for(r = 5; r > 2; r-=1){
 		for(c = 0 ; c < 4; c+=1){
-			if(board[r][c] != 0 & (board[r][c] == board[r - 1][c + 1]) & (board[r][c] == board[r - 2][c + 2]) & (board[r][c] == board[r - 3][c + 3])){
+			if(testBoard[r][c] != 0 & (testBoard[r][c] == testBoard[r - 1][c + 1]) & (testBoard[r][c] == testBoard[r - 2][c + 2]) & (testBoard[r][c] == testBoard[r - 3][c + 3])){
 				return true;
 			}
 		}
 	}
 	for(r = 5; r > 2; r-=1){
 		for(c = 3 ; c < 7; c+=1){
-			if(board[r][c] != 0 & (board[r][c] == board[r - 1][c - 1]) & (board[r][c] == board[r - 2][c - 2]) & (board[r][c] == board[r - 3][c - 3])){
+			if(testBoard[r][c] != 0 & (testBoard[r][c] == testBoard[r - 1][c - 1]) & (testBoard[r][c] == testBoard[r - 2][c - 2]) & (testBoard[r][c] == testBoard[r - 3][c - 3])){
 				return true;
 			}
 		}
@@ -203,20 +250,138 @@ function restart(){
 	turn = 1;
 	board = 
 	[[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0]];
-	document.getElementById("console").innerHTML = "Black's Turn";
+	document.getElementById("console").innerHTML = "<button onclick='players = 1; start();'>1 Player</button> <button onclick='players = 2; start();'>2 Players</button>";
 	for(i = 0; i < 7; i+=1){
-			different[i].disabled = false;
+			different[i].disabled = true;
 	}
 	for(i = 0; i<42; i+=1){
 		allSlots[i].src = "blank.png"; 
 	}
 }
-function wait(ms){
-   var start = new Date().getTime();
-   var end = start;
-   while(end < start + ms) {
-     end = new Date().getTime();
-  }
+function fillSimBoard(){
+	for(r = 0; r < 6; r+=1){
+		for(c = 0; c < 7; c +=1){
+			simBoard[r][c] = board[r][c];
+		}
+	}
+}
+function blackBot(){
+	drop(blackBotChoice());
+}
+function blackBotChoice(){
+	fillSimBoard();
+	var dont = []
+	var points = [0,0,0,0,0,0,0];
+	var pointChoice = 0;
+	if(turn == 1){
+		return 3;
+	}
+	else{
+		for(l = 0; l < 7; l+=1){
+			simDrop(l, true);
+			if(test4win(simBoard)){
+				return l;
+			}
+			else{fillSimBoard();}
+		}
+		for(l = 0; l < 7; l+=1){
+			simDrop(l, false);
+			if(test4win(simBoard)){
+				return l;
+			}
+			else{fillSimBoard();}
+		}
+		for(l = 0; l < 7; l+=1){
+			simDrop(l, true);
+			simDrop(l, false);
+			if(test4win(simBoard)){
+				dont.push(l);
+			}
+			else{fillSimBoard();}
+		}
+		fillSimBoard();
+		for(l = 0; l < 7; l+=1){
+			if(simBoard[0][l] != 0){
+				points[l] = 0;
+			}
+			else{
+				simDrop(l, true);
+				if(dont.includes(l)){
+					points[l] = 0;
+				}
+				else{
+				for(rr = 1; rr < 5; rr+=1){
+					for(cc = 1; cc < 6; cc+=1){
+						if(simBoard[rr + 1][cc] == 1){
+							points[l] += 2;
+						}
+						else if(simBoard[rr + 1][cc] == 2){
+							points[l] += 1;
+						}
+						
+						if(simBoard[rr + 1][cc - 1] == 1){
+							points[l] += 2;
+						}
+						else if(simBoard[rr + 1][cc - 1] == 2){
+							points[l] += 1;
+						}
+						
+						if(simBoard[rr + 1][cc + 1] == 1){
+							points[l] += 2;
+						}
+						else if(simBoard[rr + 1][cc + 1] == 2){
+							points[l] += 1;
+						}
+						
+						if(simBoard[rr][cc - 1] == 1){
+							points[l] += 2;
+						}
+						else if(simBoard[rr][cc - 1] == 2){
+							points[l] += 1;
+						}
+						
+						if(simBoard[rr][cc + 1] == 1){
+							points[l] += 2;
+						}
+						else if(simBoard[rr][cc + 1] == 2){
+							points[l] += 1;
+						}
+						
+						if(simBoard[rr - 1][cc] == 1){
+							points[l] += 2;
+						}
+						else if(simBoard[rr - 1][cc] == 2){
+							points[l] += 1;
+						}
+						
+						if(simBoard[rr - 1][cc - 1] == 1){
+							points[l] += 2;
+						}
+						else if(simBoard[rr - 1][cc - 1] == 2){
+							points[l] += 1;
+						}
+						
+						if(simBoard[rr - 1][cc + 1] == 1){
+							points[l] += 2;
+						}
+						else if(simBoard[rr - 1][cc + 1] == 2){
+							points[l] += 1;
+						}
+					}
+				}
+			}
+			}
+			fillSimBoard();
+		}
+		for(maxi = 1; maxi < 7; maxi+=1){
+			if(points[maxi] > points[pointChoice]){
+				pointChoice = maxi;
+			}
+		}
+		return pointChoice;
+		
+	}
+	
 }
 </script>
 </body>
