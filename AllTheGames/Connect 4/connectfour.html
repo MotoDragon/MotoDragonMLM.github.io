@@ -189,11 +189,9 @@ function drop(col){
 }
 
 function playerMoves(col){
-	if(board[0][col] != 0){
-		drop(col);
-		if(players == 1 && !test4win(board)){
-			blackBot();
-		}
+	drop(col);
+	if(players == 1 && !test4win(board)){
+		blackBot();
 	}
 }
 
