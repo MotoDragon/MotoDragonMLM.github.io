@@ -602,7 +602,7 @@ function blackBotChoice(){
 			fillSimBoard();
 		}
 		for(maxi = 1; maxi < 7; maxi+=1){
-			if(points[maxi] > points[pointChoice] && !points.includes(maxi)){
+			if(points[maxi] > points[pointChoice] && !dont.includes(maxi) && simBoard[0][maxi] == 0){
 				pointChoice = maxi;
 			}
 		}
