@@ -314,96 +314,286 @@ function blackBotChoice(){
 				else{
 					for(rr = 1; rr < 5; rr+=1){
 						for(cc = 1; cc < 6; cc+=1){
-							if(simBoard[rr + 1][cc] == 1){
-								points[l] += 2;
-							}
-							else if(simBoard[rr + 1][cc] == 2){
-								points[l] += 1;
-							}
-							
-							if(simBoard[rr + 1][cc - 1] == 1){
-								points[l] += 2;
-							}
-							else if(simBoard[rr + 1][cc - 1] == 2){
-								points[l] += 1;
-							}
-							
-							if(simBoard[rr + 1][cc + 1] == 1){
-								points[l] += 2;
-							}
-							else if(simBoard[rr + 1][cc + 1] == 2){
-								points[l] += 1;
-							}
-							
-							if(simBoard[rr][cc - 1] == 1){
-								points[l] += 2;
-							}
-							else if(simBoard[rr][cc - 1] == 2){
-								points[l] += 1;
-							}
-							
-							if(simBoard[rr][cc + 1] == 1){
-								points[l] += 2;
-							}
-							else if(simBoard[rr][cc + 1] == 2){
-								points[l] += 1;
-							}
-							
-							if(simBoard[rr - 1][cc] == 1){
-								points[l] += 2;
-							}
-							else if(simBoard[rr - 1][cc] == 2){
-								points[l] += 1;
-							}
-							
-							if(simBoard[rr - 1][cc - 1] == 1){
-								points[l] += 2;
-							}
-							else if(simBoard[rr - 1][cc - 1] == 2){
-								points[l] += 1;
-							}
-							
-							if(simBoard[rr - 1][cc + 1] == 1){
-								points[l] += 2;
-							}
-							else if(simBoard[rr - 1][cc + 1] == 2){
-								points[l] += 1;
+							if(simBoard[rr][cc] == 1){
+								if(simBoard[rr + 1][cc] == 1){
+									points[l] += 2;
+								}
+								else if(simBoard[rr + 1][cc] == 2){
+									points[l] += 1;
+								}
+								
+								if(simBoard[rr + 1][cc - 1] == 1){
+									points[l] += 2;
+								}
+								else if(simBoard[rr + 1][cc - 1] == 2){
+									points[l] += 1;
+								}
+								
+								if(simBoard[rr + 1][cc + 1] == 1){
+									points[l] += 2;
+								}
+								else if(simBoard[rr + 1][cc + 1] == 2){
+									points[l] += 1;
+								}
+								
+								if(simBoard[rr][cc - 1] == 1){
+									points[l] += 2;
+								}
+								else if(simBoard[rr][cc - 1] == 2){
+									points[l] += 1;
+								}
+								
+								if(simBoard[rr][cc + 1] == 1){
+									points[l] += 2;
+								}
+								else if(simBoard[rr][cc + 1] == 2){
+									points[l] += 1;
+								}
+								
+								if(simBoard[rr - 1][cc] == 1){
+									points[l] += 2;
+								}
+								else if(simBoard[rr - 1][cc] == 2){
+									points[l] += 1;
+								}
+								
+								if(simBoard[rr - 1][cc - 1] == 1){
+									points[l] += 2;
+								}
+								else if(simBoard[rr - 1][cc - 1] == 2){
+									points[l] += 1;
+								}
+								
+								if(simBoard[rr - 1][cc + 1] == 1){
+									points[l] += 2;
+								}
+								else if(simBoard[rr - 1][cc + 1] == 2){
+									points[l] += 1;
+								}
 							}
 						}
 					}
 					for(cc = 1; cc < 6; cc+=1){
-						if(simBoard[5][cc - 1] == 1){
-							points[l] += 2;
-						}
-						else if(simBoard[5][cc - 1] == 2){
-							points[l] += 1;
+						if(simBoard[5][cc] == 1){
+							if(simBoard[5][cc - 1] == 1){
+								points[l] += 2;
+							}
+							else if(simBoard[5][cc - 1] == 2){
+								points[l] += 1;
+							}
+							
+							if(simBoard[4][cc - 1] == 1){
+								points[l] += 2;
+							}
+							else if(simBoard[4][cc - 1] == 2){
+								points[l] += 1;
+							}
+							
+							if(simBoard[4][cc] == 1){
+								points[l] += 2;
+							}
+							else if(simBoard[4][cc] == 2){
+								points[l] += 1;
+							}
+							
+							if(simBoard[4][cc + 1] == 1){
+								points[l] += 2;
+							}
+							else if(simBoard[4][cc + 1] == 2){
+								points[l] += 1;
+							}
+							
+							if(simBoard[5][cc + 1] == 1){
+								points[l] += 2;
+							}
+							else if(simBoard[5][cc + 1] == 2){
+								points[l] += 1;
+							}
 						}
 						
-						if(simBoard[4][cc - 1] == 1){
-							points[l] += 2;
+						
+						if(simBoard[0][cc] == 1){
+							if(simBoard[0][cc - 1] == 1){
+								points[l] += 2;
+							}
+							else if(simBoard[0][cc - 1] == 2){
+								points[l] += 1;
+							}
+							
+							if(simBoard[1][cc - 1] == 1){
+								points[l] += 2;
+							}
+							else if(simBoard[1][cc - 1] == 2){
+								points[l] += 1;
+							}
+							
+							if(simBoard[1][cc] == 1){
+								points[l] += 2;
+							}
+							else if(simBoard[1][cc] == 2){
+								points[l] += 1;
+							}
+							
+							if(simBoard[1][cc + 1] == 1){
+								points[l] += 2;
+							}
+							else if(simBoard[1][cc + 1] == 2){
+								points[l] += 1;
+							}
+							
+							if(simBoard[0][cc + 1] == 1){
+								points[l] += 2;
+							}
+							else if(simBoard[0][cc + 1] == 2){
+								points[l] += 1;
+							}
 						}
-						else if(simBoard[4][cc - 1] == 2){
-							points[l] += 1;
+					}
+					for(rr = 1; rr < 5; rr+=1){
+						if(simBoard[rr][0] == 1){
+							if(simBoard[rr - 1][0] == 1){
+								points[l]+=2;
+							}
+							else if(simBoard[rr - 1][0] == 2){
+								points[l]+=1;
+							}
+							if(simBoard[rr - 1][1] == 1){
+								points[l]+=2;
+							}
+							else if(simBoard[rr - 1][1] == 2){
+								points[l]+=1;
+							}
+							if(simBoard[rr][1] == 1){
+								points[l]+=2;
+							}
+							else if(simBoard[rr][1] == 2){
+								points[l]+=1;
+							}
+							if(simBoard[rr + 1][1] == 1){
+								points[l]+=2;
+							}
+							else if(simBoard[rr + 1][1] == 2){
+								points[l]+=1;
+							}
+							if(simBoard[rr + 1][0] == 1){
+								points[l]+=2;
+							}
+							else if(simBoard[rr + 1][0] == 2){
+								points[l]+=1;
+							}
 						}
 						
-						if(simBoard[4][cc] == 1){
+						
+						if(simBoard[rr][6] == 1){
+							if(simBoard[rr - 1][6] == 1){
+								points[l]+=2;
+							}
+							else if(simBoard[rr - 1][6] == 2){
+								points[l]+=1;
+							}
+							if(simBoard[rr - 1][5] == 1){
+								points[l]+=2;
+							}
+							else if(simBoard[rr - 1][5] == 2){
+								points[l]+=1;
+							}
+							if(simBoard[rr][5] == 1){
+								points[l]+=2;
+							}
+							else if(simBoard[rr][5] == 2){
+								points[l]+=1;
+							}
+							if(simBoard[rr + 1][5] == 1){
+								points[l]+=2;
+							}
+							else if(simBoard[rr + 1][5] == 2){
+								points[l]+=1;
+							}
+							if(simBoard[rr + 1][6] == 1){
+								points[l]+=2;
+							}
+							else if(simBoard[rr + 1][6] == 2){
+								points[l]+=1;
+							}
+						}
+					}
+					if(simBoard[0][0] == 1){
+						if(simBoard[0][1] == 1){
 							points[l] += 2;
 						}
-						else if(simBoard[4][cc] == 2){
+						else if(simBoard[0][1] == 2){
 							points[l] += 1;
 						}
-						
-						if(simBoard[4][cc + 1] == 1){
+						if(simBoard[1][1] == 1){
 							points[l] += 2;
 						}
-						else if(simBoard[4][cc + 1] == 2){
+						else if(simBoard[1][1] == 2){
 							points[l] += 1;
 						}
-						
-						if(simBoard[5][cc + 1] == 1){
+						if(simBoard[1][0] == 1){
 							points[l] += 2;
 						}
-						else if(simBoard[5][cc + 1] == 2){
+						else if(simBoard[1][0] == 2){
+							points[l] += 1;
+						}
+					}
+					if(simBoard[0][6] == 1){
+						if(simBoard[0][5] == 1){
+							points[l] += 2;
+						}
+						else if(simBoard[0][5] == 2){
+							points[l] += 1;
+						}
+						if(simBoard[1][5] == 1){
+							points[l] += 2;
+						}
+						else if(simBoard[1][5] == 2){
+							points[l] += 1;
+						}
+						if(simBoard[1][6] == 1){
+							points[l] += 2;
+						}
+						else if(simBoard[1][6] == 2){
+							points[l] += 1;
+						}
+					}
+					if(simBoard[5][0] == 1){
+						if(simBoard[5][1] == 1){
+							points[l] += 2;
+						}
+						else if(simBoard[5][1] == 2){
+							points[l] += 1;
+						}
+						if(simBoard[4][1] == 1){
+							points[l] += 2;
+						}
+						else if(simBoard[4][1] == 2){
+							points[l] += 1;
+						}
+						if(simBoard[4][0] == 1){
+							points[l] += 2;
+						}
+						else if(simBoard[4][0] == 2){
+							points[l] += 1;
+						}
+					}
+					if(simBoard[5][6] == 1){
+						if(simBoard[5][5] == 1){
+							points[l] += 2;
+						}
+						else if(simBoard[5][5] == 2){
+							points[l] += 1;
+						}
+						if(simBoard[4][5] == 1){
+							points[l] += 2;
+						}
+						else if(simBoard[4][5] == 2){
+							points[l] += 1;
+						}
+						if(simBoard[4][6] == 1){
+							points[l] += 2;
+						}
+						else if(simBoard[4][6] == 2){
 							points[l] += 1;
 						}
 					}
@@ -412,7 +602,7 @@ function blackBotChoice(){
 			fillSimBoard();
 		}
 		for(maxi = 1; maxi < 7; maxi+=1){
-			if(points[maxi] > points[pointChoice]){
+			if(points[maxi] > points[pointChoice] && !points.includes(maxi)){
 				pointChoice = maxi;
 			}
 		}
