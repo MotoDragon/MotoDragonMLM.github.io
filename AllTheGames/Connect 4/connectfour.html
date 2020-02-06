@@ -135,12 +135,23 @@ var black = true;
 var blankPic = '<center><img class = "slot" src = "blank.png"></center>';
 var turn = 1;
 var botColor = 0;
+var difficulty = 0;
 var board = 
 [[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0]];
+
 var simBoard = 
 [[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0]];
+
+var weight06 = 1;
+var weight15 = 1.5;
+var weight24 = 1.75;
+var weight3 = 2;
+
 function turnChoice(){
-	document.getElementById("console").innerHTML = "<button onclick='botColor = 2; start();'>Black</button> <button onclick='botColor = 1; start();'>Red</button>";
+	document.getElementById("console").innerHTML = "<button onclick='botColor = 2; botLevelChoice();'>Black</button> <button onclick='botColor = 1; botLevelChoice();'>Red</button>";
+}
+function botLevelChoice(){
+	document.getElementById("console").innerHTML = "<button onclick='difficulty = 1; start();'>Easy</button> <button onclick='difficulty = 2; start();'>Medium</button>";
 }
 function start(){
 	for(i = 0; i < 7; i+=1){
@@ -273,13 +284,15 @@ function fillSimBoard(){
 	}
 }
 function blackBot(){
-	drop(blackBotChoice());
+	if(difficulty == 1){drop(blackBotEasyChoice());}
+	else if(difficulty == 2){drop(blackBotMedChoice());}
 }
 function redBot(){
-	drop(redBotChoice());
+	if(difficulty == 1){drop(redBotEasyChoice());}
+	else if(difficulty == 2){drop(redBotMedChoice());}
 }
 
-function blackBotChoice(){
+function blackBotEasyChoice(){
 	fillSimBoard();
 	var dont = []
 	var points = [0,0,0,0,0,0,0];
@@ -621,7 +634,375 @@ function blackBotChoice(){
 	
 }
 
-function redBotChoice(){
+function blackBotMedChoice(){
+	fillSimBoard();
+	var dont = []
+	var points = [0,0,0,0,0,0,0];
+	var pointChoice = 0;
+	var weight = 1;
+	var addPoints = 0;
+	if(turn == 1){
+		return 3;
+	}
+	else{
+		for(l = 0; l < 7; l+=1){
+			simDrop(l, true);
+			if(test4win(simBoard)){
+				return l;
+			}
+			else{fillSimBoard();}
+		}
+		for(l = 0; l < 7; l+=1){
+			simDrop(l, false);
+			if(test4win(simBoard)){
+				return l;
+			}
+			else{fillSimBoard();}
+		}
+		for(l = 0; l < 7; l+=1){
+			simDrop(l, true);
+			simDrop(l, false);
+			if(test4win(simBoard)){
+				dont.push(l);
+			}
+			else{fillSimBoard();}
+		}
+		fillSimBoard();
+		for(l = 0; l < 7; l+=1){
+			if(simBoard[0][l] != 0){
+				points[l] = 0;
+			}
+			else{
+				simDrop(l, true);
+				if(dont.includes(l)){
+					points[l] = 0;
+				}
+				else{
+					for(rr = 1; rr < 5; rr+=1){
+						for(cc = 1; cc < 6; cc+=1){
+							if(simBoard[rr][cc] == 1){
+								if(simBoard[rr + 1][cc] == 1){
+									addPoints += 2;
+								}
+								else if(simBoard[rr + 1][cc] == 2){
+									addPoints += 1;
+								}
+								
+								if(simBoard[rr + 1][cc - 1] == 1){
+									addPoints += 2;
+								}
+								else if(simBoard[rr + 1][cc - 1] == 2){
+									addPoints += 1;
+								}
+								
+								if(simBoard[rr + 1][cc + 1] == 1){
+									addPoints += 2;
+								}
+								else if(simBoard[rr + 1][cc + 1] == 2){
+									addPoints += 1;
+								}
+								
+								if(simBoard[rr][cc - 1] == 1){
+									addPoints += 2;
+								}
+								else if(simBoard[rr][cc - 1] == 2){
+									addPoints += 1;
+								}
+								
+								if(simBoard[rr][cc + 1] == 1){
+									addPoints += 2;
+								}
+								else if(simBoard[rr][cc + 1] == 2){
+									addPoints += 1;
+								}
+								
+								if(simBoard[rr - 1][cc] == 1){
+									addPoints += 2;
+								}
+								else if(simBoard[rr - 1][cc] == 2){
+									addPoints += 1;
+								}
+								
+								if(simBoard[rr - 1][cc - 1] == 1){
+									addPoints += 2;
+								}
+								else if(simBoard[rr - 1][cc - 1] == 2){
+									addPoints += 1;
+								}
+								
+								if(simBoard[rr - 1][cc + 1] == 1){
+									addPoints += 2;
+								}
+								else if(simBoard[rr - 1][cc + 1] == 2){
+									addPoints += 1;
+								}
+							}
+						}
+					}
+					for(cc = 1; cc < 6; cc+=1){
+						if(simBoard[5][cc] == 1){
+							if(simBoard[5][cc - 1] == 1){
+								addPoints += 2;
+							}
+							else if(simBoard[5][cc - 1] == 2){
+								addPoints += 1;
+							}
+							
+							if(simBoard[4][cc - 1] == 1){
+								addPoints += 2;
+							}
+							else if(simBoard[4][cc - 1] == 2){
+								addPoints += 1;
+							}
+							
+							if(simBoard[4][cc] == 1){
+								addPoints += 2;
+							}
+							else if(simBoard[4][cc] == 2){
+								addPoints += 1;
+							}
+							
+							if(simBoard[4][cc + 1] == 1){
+								addPoints += 2;
+							}
+							else if(simBoard[4][cc + 1] == 2){
+								addPoints += 1;
+							}
+							
+							if(simBoard[5][cc + 1] == 1){
+								addPoints += 2;
+							}
+							else if(simBoard[5][cc + 1] == 2){
+								addPoints += 1;
+							}
+						}
+						
+						
+						if(simBoard[0][cc] == 1){
+							if(simBoard[0][cc - 1] == 1){
+								addPoints += 2;
+							}
+							else if(simBoard[0][cc - 1] == 2){
+								addPoints += 1;
+							}
+							
+							if(simBoard[1][cc - 1] == 1){
+								addPoints += 2;
+							}
+							else if(simBoard[1][cc - 1] == 2){
+								addPoints += 1;
+							}
+							
+							if(simBoard[1][cc] == 1){
+								addPoints += 2;
+							}
+							else if(simBoard[1][cc] == 2){
+								addPoints += 1;
+							}
+							
+							if(simBoard[1][cc + 1] == 1){
+								addPoints += 2;
+							}
+							else if(simBoard[1][cc + 1] == 2){
+								addPoints += 1;
+							}
+							
+							if(simBoard[0][cc + 1] == 1){
+								addPoints += 2;
+							}
+							else if(simBoard[0][cc + 1] == 2){
+								addPoints += 1;
+							}
+						}
+					}
+					for(rr = 1; rr < 5; rr+=1){
+						if(simBoard[rr][0] == 1){
+							if(simBoard[rr - 1][0] == 1){
+								points[l]+=2;
+							}
+							else if(simBoard[rr - 1][0] == 2){
+								points[l]+=1;
+							}
+							if(simBoard[rr - 1][1] == 1){
+								points[l]+=2;
+							}
+							else if(simBoard[rr - 1][1] == 2){
+								points[l]+=1;
+							}
+							if(simBoard[rr][1] == 1){
+								points[l]+=2;
+							}
+							else if(simBoard[rr][1] == 2){
+								points[l]+=1;
+							}
+							if(simBoard[rr + 1][1] == 1){
+								points[l]+=2;
+							}
+							else if(simBoard[rr + 1][1] == 2){
+								points[l]+=1;
+							}
+							if(simBoard[rr + 1][0] == 1){
+								points[l]+=2;
+							}
+							else if(simBoard[rr + 1][0] == 2){
+								points[l]+=1;
+							}
+						}
+						
+						
+						if(simBoard[rr][6] == 1){
+							if(simBoard[rr - 1][6] == 1){
+								points[l]+=2;
+							}
+							else if(simBoard[rr - 1][6] == 2){
+								points[l]+=1;
+							}
+							if(simBoard[rr - 1][5] == 1){
+								points[l]+=2;
+							}
+							else if(simBoard[rr - 1][5] == 2){
+								points[l]+=1;
+							}
+							if(simBoard[rr][5] == 1){
+								points[l]+=2;
+							}
+							else if(simBoard[rr][5] == 2){
+								points[l]+=1;
+							}
+							if(simBoard[rr + 1][5] == 1){
+								points[l]+=2;
+							}
+							else if(simBoard[rr + 1][5] == 2){
+								points[l]+=1;
+							}
+							if(simBoard[rr + 1][6] == 1){
+								points[l]+=2;
+							}
+							else if(simBoard[rr + 1][6] == 2){
+								points[l]+=1;
+							}
+						}
+					}
+					if(simBoard[0][0] == 1){
+						if(simBoard[0][1] == 1){
+							addPoints += 2;
+						}
+						else if(simBoard[0][1] == 2){
+							addPoints += 1;
+						}
+						if(simBoard[1][1] == 1){
+							addPoints += 2;
+						}
+						else if(simBoard[1][1] == 2){
+							addPoints += 1;
+						}
+						if(simBoard[1][0] == 1){
+							addPoints += 2;
+						}
+						else if(simBoard[1][0] == 2){
+							addPoints += 1;
+						}
+					}
+					if(simBoard[0][6] == 1){
+						if(simBoard[0][5] == 1){
+							addPoints += 2;
+						}
+						else if(simBoard[0][5] == 2){
+							addPoints += 1;
+						}
+						if(simBoard[1][5] == 1){
+							addPoints += 2;
+						}
+						else if(simBoard[1][5] == 2){
+							addPoints += 1;
+						}
+						if(simBoard[1][6] == 1){
+							addPoints += 2;
+						}
+						else if(simBoard[1][6] == 2){
+							addPoints += 1;
+						}
+					}
+					if(simBoard[5][0] == 1){
+						if(simBoard[5][1] == 1){
+							addPoints += 2;
+						}
+						else if(simBoard[5][1] == 2){
+							addPoints += 1;
+						}
+						if(simBoard[4][1] == 1){
+							addPoints += 2;
+						}
+						else if(simBoard[4][1] == 2){
+							addPoints += 1;
+						}
+						if(simBoard[4][0] == 1){
+							addPoints += 2;
+						}
+						else if(simBoard[4][0] == 2){
+							addPoints += 1;
+						}
+					}
+					if(simBoard[5][6] == 1){
+						if(simBoard[5][5] == 1){
+							addPoints += 2;
+						}
+						else if(simBoard[5][5] == 2){
+							addPoints += 1;
+						}
+						if(simBoard[4][5] == 1){
+							addPoints += 2;
+						}
+						else if(simBoard[4][5] == 2){
+							addPoints += 1;
+						}
+						if(simBoard[4][6] == 1){
+							addPoints += 2;
+						}
+						else if(simBoard[4][6] == 2){
+							addPoints += 1;
+						}
+					}
+					switch(l){
+						case 0:
+							weight = weight06;
+							break;
+						case 1:
+							weight = weight15;
+							break;
+						case 2:
+							weight = weight24;
+							break;
+						case 3:
+							weight = weight3;
+							break;
+						case 4:
+							weight = weight24;
+							break;
+						case 5:
+							weight = weight15;
+							break;
+						case 6:
+							weight = weight06;						
+					}
+					points[l] += addPoints*weight;
+				}	
+			}
+			fillSimBoard();
+		}
+		for(maxi = 1; maxi < 7; maxi+=1){
+			if(points[maxi] > points[pointChoice] && !dont.includes(maxi) && simBoard[0][maxi] == 0){
+				pointChoice = maxi;
+			}
+		}
+		return pointChoice;
+		
+	}
+	
+}
+
+
+function redBotEasyChoice(){
 	fillSimBoard();
 	var dont = []
 	var points = [0,0,0,0,0,0,0];
@@ -956,6 +1337,373 @@ function redBotChoice(){
 	return pointChoice;
 	
 }
+function redBotMedChoice(){
+	fillSimBoard();
+	var dont = []
+	var points = [0,0,0,0,0,0,0];
+	var pointChoice = 0;
+	var weight = 1;
+	var addPoints = 0;
+	if(turn == 1){
+		return 3;
+	}
+	else{
+		for(l = 0; l < 7; l+=1){
+			simDrop(l, true);
+			if(test4win(simBoard)){
+				return l;
+			}
+			else{fillSimBoard();}
+		}
+		for(l = 0; l < 7; l+=1){
+			simDrop(l, false);
+			if(test4win(simBoard)){
+				return l;
+			}
+			else{fillSimBoard();}
+		}
+		for(l = 0; l < 7; l+=1){
+			simDrop(l, true);
+			simDrop(l, false);
+			if(test4win(simBoard)){
+				dont.push(l);
+			}
+			else{fillSimBoard();}
+		}
+		fillSimBoard();
+		for(l = 0; l < 7; l+=1){
+			if(simBoard[0][l] != 0){
+				points[l] = 0;
+			}
+			else{
+				simDrop(l, true);
+				if(dont.includes(l)){
+					points[l] = 0;
+				}
+				else{
+					for(rr = 1; rr < 5; rr+=1){
+						for(cc = 1; cc < 6; cc+=1){
+							if(simBoard[rr][cc] == 2){
+								if(simBoard[rr + 1][cc] == 2){
+									addPoints += 2;
+								}
+								else if(simBoard[rr + 1][cc] == 1){
+									addPoints += 1;
+								}
+								
+								if(simBoard[rr + 1][cc - 1] == 2){
+									addPoints += 2;
+								}
+								else if(simBoard[rr + 1][cc - 1] == 1){
+									addPoints += 1;
+								}
+								
+								if(simBoard[rr + 1][cc + 1] == 2){
+									addPoints += 2;
+								}
+								else if(simBoard[rr + 1][cc + 1] == 1){
+									addPoints += 1;
+								}
+								
+								if(simBoard[rr][cc - 1] == 2){
+									addPoints += 2;
+								}
+								else if(simBoard[rr][cc - 1] == 1){
+									addPoints += 1;
+								}
+								
+								if(simBoard[rr][cc + 1] == 2){
+									addPoints += 2;
+								}
+								else if(simBoard[rr][cc + 1] == 1){
+									addPoints += 1;
+								}
+								
+								if(simBoard[rr - 1][cc] == 2){
+									addPoints += 2;
+								}
+								else if(simBoard[rr - 1][cc] == 1){
+									addPoints += 1;
+								}
+								
+								if(simBoard[rr - 1][cc - 1] == 2){
+									addPoints += 2;
+								}
+								else if(simBoard[rr - 1][cc - 1] == 1){
+									addPoints += 1;
+								}
+								
+								if(simBoard[rr - 1][cc + 1] == 2){
+									addPoints += 2;
+								}
+								else if(simBoard[rr - 1][cc + 1] == 1){
+									addPoints += 1;
+								}
+							}
+						}
+					}
+					for(cc = 1; cc < 6; cc+=1){
+						if(simBoard[5][cc] == 2){
+							if(simBoard[5][cc - 1] == 2){
+								addPoints += 2;
+							}
+							else if(simBoard[5][cc - 1] == 1){
+								addPoints += 1;
+							}
+							
+							if(simBoard[4][cc - 1] == 2){
+								addPoints += 2;
+							}
+							else if(simBoard[4][cc - 1] == 1){
+								addPoints += 1;
+							}
+							
+							if(simBoard[4][cc] == 2){
+								addPoints += 2;
+							}
+							else if(simBoard[4][cc] == 1){
+								addPoints += 1;
+							}
+							
+							if(simBoard[4][cc + 1] == 2){
+								addPoints += 2;
+							}
+							else if(simBoard[4][cc + 1] == 1){
+								addPoints += 1;
+							}
+							
+							if(simBoard[5][cc + 1] == 2){
+								addPoints += 2;
+							}
+							else if(simBoard[5][cc + 1] == 1){
+								addPoints += 1;
+							}
+						}
+						
+						
+						if(simBoard[0][cc] == 2){
+							if(simBoard[0][cc - 1] == 2){
+								addPoints += 2;
+							}
+							else if(simBoard[0][cc - 1] == 1){
+								addPoints += 1;
+							}
+							
+							if(simBoard[1][cc - 1] == 2){
+								addPoints += 2;
+							}
+							else if(simBoard[1][cc - 1] == 1){
+								addPoints += 1;
+							}
+							
+							if(simBoard[1][cc] == 2){
+								addPoints += 2;
+							}
+							else if(simBoard[1][cc] == 1){
+								addPoints += 1;
+							}
+							
+							if(simBoard[1][cc + 1] == 2){
+								addPoints += 2;
+							}
+							else if(simBoard[1][cc + 1] == 1){
+								addPoints += 1;
+							}
+							
+							if(simBoard[0][cc + 1] == 2){
+								addPoints += 2;
+							}
+							else if(simBoard[0][cc + 1] == 1){
+								addPoints += 1;
+							}
+						}
+					}
+					for(rr = 1; rr < 5; rr+=1){
+						if(simBoard[rr][0] == 1){
+							if(simBoard[rr - 1][0] == 2){
+								points[l]+=2;
+							}
+							else if(simBoard[rr - 1][0] == 1){
+								points[l]+=1;
+							}
+							if(simBoard[rr - 1][1] == 2){
+								points[l]+=2;
+							}
+							else if(simBoard[rr - 1][1] == 1){
+								points[l]+=1;
+							}
+							if(simBoard[rr][1] == 2){
+								points[l]+=2;
+							}
+							else if(simBoard[rr][1] == 1){
+								points[l]+=1;
+							}
+							if(simBoard[rr + 1][1] == 2){
+								points[l]+=2;
+							}
+							else if(simBoard[rr + 1][1] == 1){
+								points[l]+=1;
+							}
+							if(simBoard[rr + 1][0] == 2){
+								points[l]+=2;
+							}
+							else if(simBoard[rr + 1][0] == 1){
+								points[l]+=1;
+							}
+						}
+						
+						
+						if(simBoard[rr][6] == 2){
+							if(simBoard[rr - 1][6] == 2){
+								points[l]+=2;
+							}
+							else if(simBoard[rr - 1][6] == 1){
+								points[l]+=1;
+							}
+							if(simBoard[rr - 1][5] == 2){
+								points[l]+=2;
+							}
+							else if(simBoard[rr - 1][5] == 1){
+								points[l]+=1;
+							}
+							if(simBoard[rr][5] == 2){
+								points[l]+=2;
+							}
+							else if(simBoard[rr][5] == 1){
+								points[l]+=1;
+							}
+							if(simBoard[rr + 1][5] == 2){
+								points[l]+=2;
+							}
+							else if(simBoard[rr + 1][5] == 1){
+								points[l]+=1;
+							}
+							if(simBoard[rr + 1][6] == 2){
+								points[l]+=2;
+							}
+							else if(simBoard[rr + 1][6] == 1){
+								points[l]+=1;
+							}
+						}
+					}
+					if(simBoard[0][0] == 2){
+						if(simBoard[0][1] == 2){
+							addPoints += 2;
+						}
+						else if(simBoard[0][1] == 1){
+							addPoints += 1;
+						}
+						if(simBoard[1][1] == 2){
+							addPoints += 2;
+						}
+						else if(simBoard[1][1] == 1){
+							addPoints += 1;
+						}
+						if(simBoard[1][0] == 2){
+							addPoints += 2;
+						}
+						else if(simBoard[1][0] == 1){
+							addPoints += 1;
+						}
+					}
+					if(simBoard[0][6] == 2){
+						if(simBoard[0][5] == 2){
+							addPoints += 2;
+						}
+						else if(simBoard[0][5] == 1){
+							addPoints += 1;
+						}
+						if(simBoard[1][5] == 2){
+							addPoints += 2;
+						}
+						else if(simBoard[1][5] == 1){
+							addPoints += 1;
+						}
+						if(simBoard[1][6] == 2){
+							addPoints += 2;
+						}
+						else if(simBoard[1][6] == 1){
+							addPoints += 1;
+						}
+					}
+					if(simBoard[5][0] == 2){
+						if(simBoard[5][1] == 2){
+							addPoints += 2;
+						}
+						else if(simBoard[5][1] == 1){
+							addPoints += 1;
+						}
+						if(simBoard[4][1] == 2){
+							addPoints += 2;
+						}
+						else if(simBoard[4][1] == 1){
+							addPoints += 1;
+						}
+						if(simBoard[4][0] == 2){
+							addPoints += 2;
+						}
+						else if(simBoard[4][0] == 1){
+							addPoints += 1;
+						}
+					}
+					if(simBoard[5][6] == 2){
+						if(simBoard[5][5] == 2){
+							addPoints += 2;
+						}
+						else if(simBoard[5][5] == 1){
+							addPoints += 1;
+						}
+						if(simBoard[4][5] == 2){
+							addPoints += 2;
+						}
+						else if(simBoard[4][5] == 1){
+							addPoints += 1;
+						}
+						if(simBoard[4][6] == 2){
+							addPoints += 2;
+						}
+						else if(simBoard[4][6] == 1){
+							addPoints += 1;
+						}
+					}
+					switch(l){
+						case 0:
+							weight = weight06;
+							break;
+						case 1:
+							weight = weight15;
+							break;
+						case 2:
+							weight = weight24;
+							break;
+						case 3:
+							weight = weight3;
+							break;
+						case 4:
+							weight = weight24;
+							break;
+						case 5:
+							weight = weight15;
+							break;
+						case 6:
+							weight = weight06;						
+					}
+					points[l] += addPoints*weight;
+				}	
+			}
+			fillSimBoard();
+		}
+		for(maxi = 1; maxi < 7; maxi+=1){
+			if(points[maxi] > points[pointChoice] && !dont.includes(maxi) && simBoard[0][maxi] == 0){
+				pointChoice = maxi;
+			}
+		}
+		return pointChoice;
+		
+	}
+	
+}
+
 </script>
 </body>
 </html>
