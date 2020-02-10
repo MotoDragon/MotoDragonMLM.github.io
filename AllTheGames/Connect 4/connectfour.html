@@ -1344,10 +1344,6 @@ function redBotMedChoice(){
 	var pointChoice = 0;
 	var weight = 1;
 	var addPoints = 0;
-	if(turn == 1){
-		return 3;
-	}
-	else{
 		for(l = 0; l < 7; l+=1){
 			simDrop(l, true);
 			if(test4win(simBoard)){
@@ -1376,7 +1372,7 @@ function redBotMedChoice(){
 				points[l] = 0;
 			}
 			else{
-				simDrop(l, true);
+				simDrop(l, false);
 				if(dont.includes(l)){
 					points[l] = 0;
 				}
@@ -1699,8 +1695,6 @@ function redBotMedChoice(){
 			}
 		}
 		return pointChoice;
-		
-	}
 	
 }
 
