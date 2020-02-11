@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en-US">
 <head>
 	<style>
@@ -58,8 +58,6 @@
 		<button onclick="players = 1; turnChoice();">1 Player</button>
 		<button onclick="players = 2; start();">2 Players</button>
 	</p>
-	
-	<p id = "points">[0,0,0,0,0,0,0]</p>
 	
 	<table cellpadding="1">
 		<tr>
@@ -289,6 +287,7 @@ function blackBot(){
 	if(difficulty == 1){drop(blackBotEasyChoice());}
 	else if(difficulty == 2){drop(blackBotMedChoice());}
 	else if(difficulty == 3){drop(blackBotHardChoice());}
+	fillSimBoard();
 }
 function redBot(){
 	if(difficulty == 1){drop(redBotEasyChoice());}
@@ -1009,7 +1008,7 @@ function blackBotHardChoice(){
 	fillSimBoard();
 	var dont = []
 	var points = [0,0,0,0,0,0,0];
-	var pointChoice = 0;
+	var pointChoice = 3;
 	var proxyTurn = turn;
 	var turnsAhead = 10;
 	var blackCoinSim = false;
@@ -1040,7 +1039,7 @@ function blackBotHardChoice(){
 			if(test4win(simBoard)){
 				dont.push(l);
 			}
-			else{fillSimBoard();}
+			fillSimBoard();
 		}
 		fillSimBoard();
 		for(testingSlot = 0; testingSlot < 7; testingSlot++){
@@ -1077,15 +1076,14 @@ function blackBotHardChoice(){
 			}
 		}
 		fillSimBoard();
-		for(l = 0; l < 7; l++){
-			if(simBoard[0][l] == 0 && !dont.includes(l)){pointChoice = l; break;}
+		for(l = 0; l<7; l++){
+			if(board[0][l] == 0 && !dont.includes(l)){pointChoice = l; break;}
 		}
 		for(maxi = 0; maxi < 7; maxi+=1){
-			if(points[maxi] > points[pointChoice] && !dont.includes(maxi) && simBoard[0][maxi] == 0){
+			if((points[maxi] > points[pointChoice]) && (!dont.includes(maxi)) & (board[0][maxi] == 0)){
 				pointChoice = maxi;
 			}
 		}
-		document.getElementById("points").innerHTML = "[" + points[0] + "," + points[1] + "," + points[2] + "," + points[3] + "," + points[4] + "," + points[5] + "," + points[6] + "]";
 		return pointChoice;
 	}
 }
@@ -1826,7 +1824,7 @@ function redBotHardChoice(){
 			if(test4win(simBoard)){
 				dont.push(l);
 			}
-			else{fillSimBoard();}
+			fillSimBoard();
 		}
 		fillSimBoard();
 		for(testingSlot = 0; testingSlot < 7; testingSlot++){
@@ -1864,14 +1862,13 @@ function redBotHardChoice(){
 		}
 		fillSimBoard();
 		for(l = 0; l < 7; l++){
-			if(simBoard[0][l] == 0 && !dont.includes(l)){pointChoice = l; break;}
+			if(board[0][l] == 0 && !dont.includes(l)){pointChoice = l; break;}
 		}
 		for(maxi = 0; maxi < 7; maxi+=1){
 			if(points[maxi] > points[pointChoice] && !dont.includes(maxi) && simBoard[0][maxi] == 0){
 				pointChoice = maxi;
 			}
 		}
-		document.getElementById("points").innerHTML = "[" + points[0] + "," + points[1] + "," + points[2] + "," + points[3] + "," + points[4] + "," + points[5] + "," + points[6] + "]";
 		return pointChoice;
 	}
 }
