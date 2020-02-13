@@ -136,6 +136,8 @@ var blankPic = '<center><img class = "slot" src = "blank.png"></center>';
 var turn = 1;
 var botColor = 0;
 var difficulty = 0;
+var winPoints = 1;
+var lossPoints = 1;
 var board = 
 [[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0]];
 
@@ -151,8 +153,15 @@ function turnChoice(){
 	document.getElementById("console").innerHTML = "<button onclick='botColor = 2; botLevelChoice();'>Black</button> <button onclick='botColor = 1; botLevelChoice();'>Red</button>";
 }
 function botLevelChoice(){
-	document.getElementById("console").innerHTML = "<button onclick='difficulty = 1; start();'>Easy</button> <button onclick='difficulty = 2; start();'>Medium</button> <button onclick='difficulty = 3; start();'>Hard</button>";
+	document.getElementById("console").innerHTML = "<button onclick='difficulty = 1; start();'>Easy</button> <button onclick='difficulty = 2; start();'>Medium</button> <button onclick='difficulty = 3; pointWeights();'>Hard</button>";
 }
+function pointWeights(){
+	document.getElementById("console").innerHTML = "How many points for winning? <br/> <button onclick='winPoints = 0; lossChoice();'>0</button> <button onclick='winPoints = 1; lossChoice();'>1</button> <button onclick='winPoints = 2; lossChoice();'>2</button>";
+}
+function lossChoice(){
+	document.getElementById("console").innerHTML = "How many points for losing? <br/> <button onclick='lossPoints = 0; start();'>0</button> <button onclick='lossPoints = 1; start();'>1</button> <button onclick='lossPoints = 2; start();'>2</button>";
+}
+
 function start(){
 	for(i = 0; i < 7; i+=1){
 			different[i].disabled = false;
@@ -684,7 +693,7 @@ function blackBotMedChoice(){
 		fillSimBoard();
 		for(testingSlot = 0; testingSlot < 7; testingSlot++){
 			fillSimBoard();
-			pattern = [0,0,0,0]; //turns order
+			pattern = [0,0,0]; //turns order
 			while(pattern[0] < 7){
 				fillSimBoard();
 				simDrop(testingSlot,true);
@@ -795,8 +804,8 @@ function blackBotHardChoice(){
 					else{
 						simDrop(pattern[turnSim],blackCoinSim);
 						if(test4win(simBoard)){
-							if(blackCoinSim){points[testingSlot] += 1;}
-							else{points[testingSlot] -= 2;}
+							if(blackCoinSim){points[testingSlot] += winPoints;}
+							else{points[testingSlot] -= lossPoints;}
 							break;
 						}
 						blackCoinSim = !blackCoinSim;
@@ -1216,7 +1225,7 @@ function redBotMedChoice(){
 		fillSimBoard();
 		for(testingSlot = 0; testingSlot < 7; testingSlot++){
 			fillSimBoard();
-			pattern = [0,0,0,0]; //turns order
+			pattern = [0,0,0]; //turns order
 			while(pattern[0] < 7){
 				fillSimBoard();
 				simDrop(testingSlot,false);
@@ -1326,8 +1335,8 @@ function redBotHardChoice(){
 					else{
 						simDrop(pattern[turnSim],blackCoinSim);
 						if(test4win(simBoard)){
-							if(!blackCoinSim){points[testingSlot] += 1}
-							else{points[testingSlot] -= 2}
+							if(!blackCoinSim){points[testingSlot] += winPoints;}
+							else{points[testingSlot] -= lossPoints;}
 							break;
 						}
 						blackCoinSim = !blackCoinSim;
