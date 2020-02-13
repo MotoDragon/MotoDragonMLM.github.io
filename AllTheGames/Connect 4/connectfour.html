@@ -796,7 +796,7 @@ function blackBotHardChoice(){
 						simDrop(pattern[turnSim],blackCoinSim);
 						if(test4win(simBoard)){
 							if(blackCoinSim){points[testingSlot] += 1;}
-							else{points[testingSlot] -= 1;}
+							else{points[testingSlot] -= 2;}
 							break;
 						}
 						blackCoinSim = !blackCoinSim;
@@ -1327,7 +1327,7 @@ function redBotHardChoice(){
 						simDrop(pattern[turnSim],blackCoinSim);
 						if(test4win(simBoard)){
 							if(!blackCoinSim){points[testingSlot] += 1}
-							else{points[testingSlot] -= 1}
+							else{points[testingSlot] -= 2}
 							break;
 						}
 						blackCoinSim = !blackCoinSim;
