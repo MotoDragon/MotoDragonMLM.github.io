@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<style>
+		body {background-color: #3366ff ;}
+		table, td{
+		border: 1px solid black;
+		border-collapse: collapse;
+		}
+		img{
+			width: 50px;
+			height: 50px;
+		}
+		.dropper{
+			padding: 10px 1px;
+		}
+		.restart{
+			padding: 10px 24px;
+		}
+		ul {
+			  list-style-type: none;
+			  margin: 0;
+			  padding: 0;
+			  overflow: hidden;
+			  background-color: #333;
+			}
+
+			li {
+			  float: left;
+			}
+
+			li a {
+			  display: block;
+			  color: white;
+			  text-align: center;
+			  padding: 14px 16px;
+			  text-decoration: none;
+			}
+
+			li a:hover {
+			  background-color: #111;
+			}
+	</style>
+</head>
+<title>Cube Pack Generator</title>
+<body>
+	<ul>
+	  <li><a class="active" href="../../index.html">Home</a></li>
+	  <li><a href="../Chess/chess2_0.html">Chess</a></li>
+	  <li><a href="../TicTacToe/TicTacToeRemade.html">Tic Tac Toe</a></li>
+	  <li><a href="../Connect 4/connectfour.html">Connect Four</a></li>
+	  <li><a href="../CubeGen/CubePackGenerator.html">Cube Pack Generator</a></li>
+	</ul>
+	<center>
+
+	<h1>Cube Pack Generator</h1>
+	
+	<table cellpadding="1">
+		<tr>
+			<th>Cards</th>
+		</tr>
+		<tr>
+			<td><center>
+				<form>
+					<input type="radio" id="1" class="card" value="0">
+					<label id = "1l" for="1">Card 1</label><br>
+					<input type="radio" id="2" class="card" value="1">
+					<label id = "2l"for="l">Card 2</label><br>
+					<input type="radio" id="3" class="card" value="2">
+					<label id = "3l" for="3">Card 3</label><br>
+					<input type="radio" id="4" class="card" value="3">
+					<label id = "4l" for="4">Card 4</label><br>
+					<input type="radio" id="5" class="card" value="4">
+					<label id = "5l" for="5">Card 5</label><br>
+					<input type="radio" id="6" class="card" value="5">
+					<label id = "6l" for="6">Card 6</label><br>
+					<input type="radio" id="7" class="card" value="6">
+					<label id = "7l" for="7">Card 7</label><br>
+					<input type="radio" id="8" class="card" value="7">
+					<label id = "8l" for="8">Card 8</label><br>
+					<input type="radio" id="9" class="card" value="8">
+					<label id = "9l" for="9">Card 9</label><br>
+					<input type="radio" id="10" class="card" value=="9">
+					<label id = "10l" for="10">Card 10</label><br>
+					<input type="radio" id="11" class="card" value="10">
+					<label id = "11l" for="11">Card 11</label><br>
+					<input type="radio" id="12" class="card" value="11">
+					<label id = "12l" for="12">Card 12</label><br>
+					<input type="radio" id="13" class="card" value="12">
+					<label id = "13l" for="13">Card 13</label><br>
+				</form> 
+				<button onclick="processSelect();">Submit</button>
+			</center></td>
+		</tr>
+		<tr>
+			<td><center>
+				<label for="pCode">Pack Code</label><br>
+				<input type="text" id="pCode" name="fname" value="Enter Code Here"><button onclick="loadFlow();">Submit</button>
+			</center></td>
+		</tr>
+	</table>
+	<p id = "log"></p>
+	<p><button class = "restart" onclick = "generateFlow();">Generate</button></p>
+</center>
+
+
+<script>
+{var RyanCubeHolo =  //54//
+	[
+	  ["Elemental HERO Stratos"],
+	  ["Linkslayer"],
+	  ["Gravekeeper's Spy"],
+	  ["Grandmaster of the Six Samurai"],
+	  ["Ninja Grandmaster Hanzo"],
+	  ["Gorz the Emissary of Darkness"],
+	  ["Summoner Monk"],
+	  ["T.G. Rush Rhino"],
+	  ["Upstart Golden Ninja"],
+	  ["Geargiarmor"],
+	  ["Redox"],
+	  ["Sky Striker Ace - Raye"],
+	  ["Desert Twister"],
+	  ["Lumina"],
+	  ["Dark Armed Dragon"],
+	  ["Tour Guide from the Underworld"],
+	  ["Chronomaly Nebra Disk"],
+	  ["Vision HERO Witch Raider"],
+	  ["Adamancipator Analyzer"],
+	  ["Traptrix Genlisea"],
+	  ["Green Baboon"],
+	  ["Raiza the Storm Monarch"],
+	  ["Machina Possesstorage"],
+	  ["Celestia"],
+	  ["Silent Psychic Wizard"],
+	  ["Destiny Draw"],
+	  ["Reinforcement of the Army"],
+	  ["Solar Recharge"],
+	  ["Spirit Charmers"],
+	  ["Black Whirlwind"],
+	  ["Cynet Backdoor"],
+	  ["Magic Gate of Miracles"],
+	  ["Brain Control"],
+	  ["Convert Contact"],
+	  ["Six Samurai United"],
+	  ["Card of Demise"],
+	  ["Soul Charge"],
+	  ["Call of the Atlanteans"],
+	  ["Ninjitsu Art of Transformation"],
+	  ["Vanity's Emptiness"],
+	  ["Dark Renewal"],
+	  ["Artifact Sanctum"],
+	  ["Horn of the Phantom Beast"],
+	  ["Heavy Storm Duster"],
+	  ["Torrential Tribute"],
+	  ["Solemn Warning"],
+	  ["Dark Horizon"],
+	  ["Boot-Up Order - Gear Force"],
+	  ["Test Tiger"],
+	  ["Twilight Ninja Getsuga"],
+	  ["Chaos Sorcerer"],
+	  ["Kozmo Farmgirl"],
+	  ["Giant Trunade"],
+	  ["Snake Rain"]
+	];
+}
+
+{var RyanCubeRare =  //94//
+	[
+	  ["Sangan"],
+	  ["Witch of the Black Forest"],
+	  ["Freed the Brave Wanderer"],
+	  ["Dark Blade the Captain of the Evil World"],
+	  ["Freed the Matchless General"],
+	  ["Blackwing - Shura the Blue Flame"],
+	  ["Alector"],
+	  ["Gravekeeper's Chief"],
+	  ["Lightray Sorcerer"],
+	  ["Traptrix Myrmeleo"],
+	  ["SPYRAL Tough"],
+	  ["Mystic Tomato"],
+	  ["Blackwing - Gale the Whirlwind"],
+	  ["Expressroid"],
+	  ["Mezuki"],
+	  ["T.G. Striker"],
+	  ["Wind-Up Magician"],
+	  ["Psychic Commander"],
+	  ["Jinzo"],
+	  ["Destiny HERO - Disk Commander"],
+	  ["Alien Ammonite"],
+	  ["Spirit Reaper"],
+	  ["Neo-Spacian Grand Mole"],
+	  ["Snowman Eater"],
+	  ["Flamvell Firedog"],
+	  ["Orcust Harp Horror"],
+	  ["Desmanian Devil"],
+	  ["Mekk-Knight Yellow Star"],
+	  ["The Fiend Megacyber"],
+	  ["Sea Lancer"],
+	  ["Psychic Megacyber"],
+	  ["Performapal Whip Snake"],
+	  ["Armageddon Knight"],
+	  ["Scrap Recycler"],
+	  ["Infernoid Patrulea"],
+	  ["Enemy Controller"],
+	  ["Soul Exchange"],
+	  ["Foolish Burial"],
+	  ["Pot of Duality"],
+	  ["Chaos Zone"],
+	  ["Swords of Concealing Light"],
+	  ["Moon Mirror Shield"],
+	  ["Evil Mind"],
+	  ["Cross Over"],
+	  ["Scapegoat"],
+	  ["One for One"],
+	  ["Makiu"],
+	  ["Wonder Wand"],
+	  ["Gladiator Beast's Respite"],
+	  ["Mind Control"],
+	  ["Circle of the Fire Kings"],
+	  ["Hey"],
+	  ["Danger! Excitement! Mystery!"],
+	  ["Soul Taker"],
+	  ["Gagagabolt"],
+	  ["Trap Hole"],
+	  ["Call of the Haunted"],
+	  ["Bottomless Trap Hole"],
+	  ["Widespread Ruin"],
+	  ["Gladiator Beast War Chariot"],
+	  ["White Howling"],
+	  ["Compulsory Evacuation Device"],
+	  ["Memory of an Adversary"],
+	  ["Dimensional Prison"],
+	  ["Lost Wind"],
+	  ["Michizure"],
+	  ["Escape from the Dark Dimension"],
+	  ["Ring of Destruction"],
+	  ["Icarus Attack"],
+	  ["Magician's Circle"],
+	  ["Cynet Regression"],
+	  ["Reinforce Truth"],
+	  ["Breaker the Magical Warrior"],
+	  ["Tsukuyomi"],
+	  ["Command Knight"],
+	  ["Swordsman of Revealing Light"],
+	  ["Lyla"],
+	  ["Ryko"],
+	  ["Genex Ally Birdman"],
+	  ["Super Quantum Red Layer"],
+	  ["Cyber Dragon"],
+	  ["Glow-Up Bulb"],
+	  ["Mathematician"],
+	  ["Salamangreat Jack Jaguar"],
+	  ["Book of Moon"],
+	  ["Forbidden Lance"],
+	  ["Adamancipator Friends"],
+	  ["Magical Dimension"],
+	  ["Lightning Vortex"],
+	  ["Amazoness Heirloom"],
+	  ["Spellbook of Power"],
+	  ["Trap Stun"],
+	  ["Fiendish Chain"],
+	  ["Judgment of Thunder"]
+	];}
+
+{var RyanCubeCommons = //207//
+	[
+	  ["D.D. Warrior Lady"],
+	  ["D.D. Assailant"],
+	  ["Cyber Valley"],
+	  ["Hunter of Black Feathers"],
+	  ["Chow Len the Prophet"],
+	  ["Mecha Phantom Beast Stealthray"],
+	  ["Black Brachios"],
+	  ["Man-Eater Bug"],
+	  ["Bazoo the Soul Eater"],
+	  ["Pinch Hopper"],
+	  ["Battlestorm"],
+	  ["Naturia Strawberry"],
+	  ["Absolute Crusader"],
+	  ["Wind-Up Soldier"],
+	  ["Mecha Phantom Beast Tetherwolf"],
+	  ["Evilswarm Salamandra"],
+	  ["Power Breaker"],
+	  ["Feedran"],
+	  ["Strike Ninja"],
+	  ["Card Trooper"],
+	  ["Sinister Serpent"],
+	  ["Sergeant Electro"],
+	  ["Wall of Illusion"],
+	  ["Chiron the Mage"],
+	  ["Doomcalibur Knight"],
+	  ["Interplanetarypurpleythorny Dragon"],
+	  ["Blackwing - Elphin the Raven"],
+	  ["Speedroid Menko"],
+	  ["Airknight Parshath"],
+	  ["Crystal Seer"],
+	  ["Battle Fader"],
+	  ["Cardcar D"],
+	  ["Valkyrian Knight"],
+	  ["Fencing Fire Ferret"],
+	  ["Blue Flame Swordsman"],
+	  ["World Carrotweight Champion"],
+	  ["Prufinesse"],
+	  ["Swift Scarecrow"],
+	  ["Freya"],
+	  ["Dark Magician of Chaos"],
+	  ["Ninja Grandmaster Sasuke"],
+	  ["Exarion Universe"],
+	  ["Diskblade Rider"],
+	  ["Ehren"],
+	  ["Destructotron"],
+	  ["Enraged Battle Ox"],
+	  ["Blizzard Dragon"],
+	  ["Amazoness Sage"],
+	  ["Wind-Up Juggler"],
+	  ["Archfiend Cavalry"],
+	  ["Rainbow Kuriboh"],
+	  ["Sphere Kuirboh"],
+	  ["Raiden"],
+	  ["Krebons"],
+	  ["Mist Valley Soldier"],
+	  ["Shaddoll Dragon"],
+	  ["Jain"],
+	  ["Golden Flying Fish"],
+	  ["Anarchist Monk Ranshin"],
+	  ["Blackwing - Zephyros the Elite"],
+	  ["Archfiend Emperor"],
+	  ["Fire Hand"],
+	  ["Ice Hand"],
+	  ["Beast King Barbaros"],
+	  ["Kuribandit"],
+	  ["Magician of Faith"],
+	  ["Yomi Ship"],
+	  ["Goblin Elite Attack Force"],
+	  ["The Six Samurai - Irou"],
+	  ["Eclipse Wyvern"],
+	  ["Charioteer of Prophecy"],
+	  ["Evilswarm Ketos"],
+	  ["Lindbloom"],
+	  ["Marmiting Captain"],
+	  ["Peropero Cerperus"],
+	  ["Destiny HERO - Celestial"],
+	  ["Speedroid Horse Stilts"],
+	  ["Mahjong Munia Maidens"],
+	  ["Antialian"],
+	  ["Bayonater"],
+	  ["Balancer Lord"],
+	  ["Legendary Jujitsu Master"],
+	  ["Power Injector"],
+	  ["Launcher Commander"],
+	  ["Parry Knights"],
+	  ["Stygian Security"],
+	  ["Dinowrestler Coelasilat"],
+	  ["Yosenju Kama 1"],
+	  ["Amano-Iwato"],
+	  ["Terrifying Toddler of Torment"],
+	  ["Cyberse Wizard"],
+	  ["Gravekeeper's Guard"],
+	  ["Slate Warrior"],
+	  ["Vortex Trooper"],
+	  ["Half Shut"],
+	  ["Super Rush Headlong"],
+	  ["Shrink"],
+	  ["Riryoku"],
+	  ["Double Cyclone"],
+	  ["Axe of Fools"],
+	  ["Cursed Armaments"],
+	  ["Gravity Lash"],
+	  ["Mordschlag"],
+	  ["Dragonmaid Send-Off"],
+	  ["Mystical Space Typhoon"],
+	  ["Shard of Greed"],
+	  ["Creature Swap"],
+	  ["Cosmic Cyclone"],
+	  ["Swords of Revealing Light"],
+	  ["Wonder Balloons"],
+	  ["Forbidden Chalice"],
+	  ["Rush Recklessly"],
+	  ["My Body as a Shield"],
+	  ["Union Attack"],
+	  ["Break! Draw!"],
+	  ["Ego Boost"],
+	  ["Night Beam"],
+	  ["Forbidden Dress"],
+	  ["Forbidden Scripture"],
+	  ["Ancient Gear Castle"],
+	  ["Endymion's Lab"],
+	  ["Xyz Import"],
+	  ["A Wingbeat of Giant Dragon"],
+	  ["Ekibyo Drakmord"],
+	  ["Smashing Ground"],
+	  ["Big Wave Small Wave"],
+	  ["Banner of Courage"],
+	  ["Earthquake"],
+	  ["Magicians Unite"],
+	  ["Raging Mad Plants"],
+	  ["Blustering Winds"],
+	  ["Fish and Kicks"],
+	  ["Spellbook of Wisdom"],
+	  ["Mystic Box"],
+	  ["Back-Up Rider"],
+	  ["Flower Stacking"],
+	  ["Called by the Grave"],
+	  ["Call of the Mummy"],
+	  ["Magic Triangle of the Ice Barrier"],
+	  ["Fire Formation - Tensu"],
+	  ["Windstorm of Etaqua"],
+	  ["Zero Gravity"],
+	  ["Curse of Anubis"],
+	  ["Kunai with Chain"],
+	  ["Dust Tornado"],
+	  ["Waboku"],
+	  ["Security Orb"],
+	  ["Beast Rising"],
+	  ["The Golden Apples"],
+	  ["Overwind"],
+	  ["Impenetrable Attack"],
+	  ["Ghostrick Scare"],
+	  ["Pulse Mines"],
+	  ["Mirror Wall"],
+	  ["Wall of Disruption"],
+	  ["Metalmorph"],
+	  ["Rare Metalmorph"],
+	  ["Floodgate Trap Hole"],
+	  ["Wiretap"],
+	  ["Paleozoic Olenoides"],
+	  ["Interdimensional Matter Transporter"],
+	  ["Magical Arm Shield"],
+	  ["Draining Shield"],
+	  ["Acid Trap Hole"],
+	  ["No Entry!!"],
+	  ["Skill Successor"],
+	  ["TG1-EM1"],
+	  ["Butterflyoke"],
+	  ["Archfiend's Roar"],
+	  ["Threatening Roar"],
+	  ["Magic Jammer"],
+	  ["Beckoning Light"],
+	  ["Judgment of Anubis"],
+	  ["Seven Tools of the Bandit"],
+	  ["Time Machine"],
+	  ["Fairy Wind"],
+	  ["Chaos Burst"],
+	  ["Negate Attack"],
+	  ["Compulsory Escape Device"],
+	  ["Dimension Gate"],
+	  ["Ghosts From the Past"],
+	  ["The Deep Grave"],
+	  ["Snowman Effect"],
+	  ["Raigeki Break"],
+	  ["Raigeki Bottle"],
+	  ["Divine Wrath"],
+	  ["Debunk"],
+	  ["Fiend Griefing"],
+	  ["Ultimate Providence"],
+	  ["Ret-time Reviver Emit-ter"],
+	  ["Koa'ki Meiru Crusader"],
+	  ["Blackwing - Kris the Crack of Dawn"],
+	  ["Heavy Knight of the Flames"],
+	  ["Bujingi Hare"],
+	  ["Dance Princess of the Ice Barrier"],
+	  ["Wind-Up Knight"],
+	  ["U.A. Midfielder"],
+	  ["Dodododwarf Gogogoglove"],
+	  ["Supermagic Sword of Raptinus"],
+	  ["Blizzard"],
+	  ["Inzektor Sword - Zektkaliber"],
+	  ["Fire Fomration - Gyokkou"],
+	  ["Intruder Alarm - Yellow Alert"],
+	  ["Starlight Road"],
+	  ["Revenge Rally"],
+	  ["Skill Prisoner"],
+	  ["Switcheroroo"]
+	];}
+
+{var RyanCubeHoloExtra = //42//
+	[
+	  ["Ritual Beast Ulti-Cannahawk"],
+	  ["Ritual Beast Ulti-Pettlephin"],
+	  ["Gladiator Beast Nerokius"],
+	  ["Stardust Dragon"],
+	  ["Brionac"],
+	  ["Lavalval Dragun"],
+	  ["Arcanite Magician"],
+	  ["Black Rose Moonlight Dragon"],
+	  ["Micahel"],
+	  ["Infernoble Knight Captain Oliver"],
+	  ["Stardust Spark Dragon"],
+	  ["M-X-Saber Invoker"],
+	  ["Photon Alexandra Queen"],
+	  ["Castel"],
+	  ["Ghostrick Angel of Mischief"],
+	  ["Wind-Up Zenmaines"],
+	  ["Ghostrick Alucard"],
+	  ["Sylvan Princessprite"],
+	  ["Zoodiac Chakanine"],
+	  ["Gallant Granite"],
+	  ["Beatrice"],
+	  ["T.G. Trident Launcher"],
+	  ["Test Panther"],
+	  ["Simorgh"],
+	  ["Galatea"],
+	  ["Transcode Talker"],
+	  ["Crusadia Magius"],
+	  ["Gullveig of the Nordic Ascendant"],
+	  ["Topologic Bomber Dragon"],
+	  ["Marincess Sea Angel"],
+	  ["Mecha Phantom Beast Auroradon"],
+	  ["Reptillianne Echidna"],
+	  ["Eria the Water Charmer"],
+	  ["Mermail Abyssalacia"],
+	  ["Quadborrel Dragon"],
+	  ["Crossrose Dragon"],
+	  ["XX-Saber Hyunlei"],
+	  ["Dante"],
+	  ["Dingirsu"],
+	  ["Isolde"],
+	  ["Condemned Darklord"],
+	  ["Prank-Kids Dodo-Doodle-Doo"]
+	];}
+
+{var RyanCubeRareCommonExtra = //40//
+	[
+	  ["Red Dragon Archfiend"],
+	  ["X-Saber Souza"],
+	  ["Formula Synchron"],
+	  ["Magical Android"],
+	  ["Number 39: Utopia"],
+	  ["Number 17: Leviathan Dragon"],
+	  ["Gachi Gachi Gantetsu"],
+	  ["Cairngorgon"],
+	  ["Evigishki Merrowgeist"],
+	  ["Muzurhythm the String Djinn"],
+	  ["Photon Papilloperative"],
+	  ["Ghostrick Dullahan"],
+	  ["Fairy Cheer Girl"],
+	  ["Leviair the Sea Dragon"],
+	  ["Decode Talker"],
+	  ["Cyberse Wicckid"],
+	  ["Hraesvelgr"],
+	  ["Bellcat Fighter"],
+	  ["Geonator Transverser"],
+	  ["Underclock Taker"],
+	  ["Triple Burst Dragon"],
+	  ["Knightmare Phoenix"],
+	  ["Linkuriboh"],
+	  ["Amphibious Swarmship Amblowhale"],
+	  ["Harpie Conductor"],
+	  ["Link Disciple"],
+	  ["Gladiator Beast Essedarii"],
+	  ["Armades"],
+	  ["Mist Wurm"],
+	  ["Mist Valley Thunder Lord"],
+	  ["Daigusto Sphreez"],
+	  ["Celestial Wolf Lord"],
+	  ["Mist Bird Clausolas"],
+	  ["Daigusto Gulldos"],
+	  ["Abyss Dweller"],
+	  ["Mechquipped Angineer"],
+	  ["Day-Breaker the Shining Magical Warrior"],
+	  ["Knightmare Cerberus"],
+	  ["Firewall Dragon"],
+	  ["Guardragon Elpy"]
+	];}
+
+var CCHolo = RyanCubeHolo;
+var CCRare = RyanCubeRare;
+var CCCommons = RyanCubeCommons;
+var CCHoloExtra = RyanCubeHoloExtra;
+var CCRareCommonExtra = RyanCubeRareCommonExtra;
+
+var globalPackCode = [];
+
+function generateFlow(){
+	generatedPack = generatePack();
+	packReader(generatedPack);
+	document.getElementById("pCode").value = packCode(generatedPack);
+	globalPackCode = generatedPack;
+}
+
+function loadFlow(){
+	pCode = document.getElementById("pCode").value;
+	document.getElementById('log').value = document.getElementById("pCode").value;
+	rPack = packParser(pCode);
+	packReader(rPack);
+	globalPackCode = rPack;
+}
+
+function processSelect(){
+	var radios = document.getElementsByClassName('card'); //Grabs all the radio buttons
+		for (var i = 0, length = radios.length; i < length; i++) { 
+		  if (radios[i].checked) {			//Looking for the selected button
+			globalPackCode.splice(radios[i].value,1);   //Remove selected card from pack 
+			break;
+		  }
+		}
+	packReader(globalPackCode);
+	document.getElementById("pCode").value = packCode(globalPackCode);
+}
+
+function generatePack(){
+HoloExtra = 1;
+RCExtra = 2;
+Holo = 1;
+Rare = 2
+Common = 7;
+
+a = 42;
+b = 40;
+c = 54;
+d = 94; 
+e = 207;
+
+var Pack = [];
+	for(i = 0; i < HoloExtra; i+=1){
+		Pack [i] = 'a' + getRandomInt(0,a);
+	}
+	for(i = 0; i < RCExtra; i+=1){
+		Pack [i+HoloExtra] = 'b' + getRandomInt(0,b);
+	}
+	for(i = 0; i < Holo; i+=1){
+		Pack [i+HoloExtra+RCExtra] = 'c' + getRandomInt(0,c);
+	}
+	for(i = 0; i < Rare; i+=1){
+		Pack [i+HoloExtra+RCExtra+Holo] = 'd' + getRandomInt(0,d);
+	}
+	for(i = 0; i < Common; i+=1){
+		Pack [i+HoloExtra+RCExtra+Holo+Rare] = 'e' + getRandomInt(0,e);
+	}
+	document.getElementById("1l").innerHTML = CCHolo[parseInt(Pack[0].substring(1))];
+return Pack;
+}
+
+function packParser(pPack){ //Take a string and convert it into a readable pack
+	rPack = [];
+	cardNum = 0;
+	for (i = 0; i < pPack.length; i+=0){
+		if(isLetter(pPack.charAt(i))){ //Checking the first character's a letter
+			rPack[cardNum] = pPack.charAt(i);							//Appends the card type identifier
+			for(n = 1; isDigit(pPack.charAt(i+n)); n+=1){		//Appends the card number identifier
+				rPack[cardNum] = rPack[cardNum].concat(pPack.charAt(i+n));
+			}
+			i = i + rPack[cardNum].length
+			cardNum = cardNum + 1;
+		}
+		else{
+			document.getElementById('log').value = "You submitted an invalid Pack Code, silly";
+			rPack = ["i"];
+			break;
+		}
+	}
+	return rPack;
+}
+
+function packReader(rPack){ //Print the cards to the Radio Buttons
+	if(rPack == ["i"]){
+	}
+	else{
+		packSize = rPack.length;
+		for (i = 0; i < packSize; i+=1){
+			if(rPack[i].charAt(0) == 'a'){ //If starting character of card is a, use the Holo Extra array
+				document.getElementById((i+1)+'l').innerHTML = CCHoloExtra[parseInt(rPack[i].substring(1))];
+
+			}
+			else if(rPack[i].charAt(0) == 'b'){ //If starting character of card is a, use the Rare Common Extra array
+				document.getElementById((i+1)+'l').innerHTML = CCRareCommonExtra[parseInt(rPack[i].substring(1))];
+			}
+			else if(rPack[i].charAt(0) == 'c'){ //If starting character of card is a, use the Holo array
+				document.getElementById((i+1)+'l').innerHTML = CCHolo[parseInt(rPack[i].substring(1))];
+			}
+			else if(rPack[i].charAt(0) == 'd'){ //If starting character of card is a, use the Rare array
+				document.getElementById((i+1)+'l').innerHTML = CCRare[parseInt(rPack[i].substring(1))];
+			}
+			else if(rPack[i].charAt(0) == 'e'){ //If starting character of card is a, use the Common array
+				document.getElementById((i+1)+'l').innerHTML = CCCommons[parseInt(rPack[i].substring(1))];
+			}
+			else{
+				document.getElementById("log").innerHTML = "There's already a breaker for you, so if you hit this, you found a bug, smarty";
+			}
+			
+		}
+	}
+}
+
+function packCode(rPack){ //Print a Pack Code
+	var printedPack = "";
+	
+	for (i = 0; i < rPack.length; i+=1){
+		printedPack = printedPack + rPack[i];
+	}
+	
+	return printedPack;
+}
+
+
+function isLetter(str){
+	return (/[a-zA-z]/g).test(str);
+}
+
+function isDigit(str){
+	return /[0-9]/g.test(str);
+}
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+}
+
+</script>
+</body>
+</html>
