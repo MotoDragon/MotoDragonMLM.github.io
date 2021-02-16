@@ -62,32 +62,32 @@
 		<tr>
 			<td><center>
 				<form>
-					<input type="radio" name = 'card' id="1" class="card" value="0">
-					<label id = "1l" for="1">Card 1</label><br>
-					<input type="radio" name = 'card' id="2" class="card" value="1">
-					<label id = "2l"for="l">Card 2</label><br>
-					<input type="radio" name = 'card' id="3" class="card" value="2">
-					<label id = "3l" for="3">Card 3</label><br>
-					<input type="radio" name = 'card' id="4" class="card" value="3">
-					<label id = "4l" for="4">Card 4</label><br>
-					<input type="radio" name = 'card' id="5" class="card" value="4">
-					<label id = "5l" for="5">Card 5</label><br>
-					<input type="radio" name = 'card' id="6" class="card" value="5">
-					<label id = "6l" for="6">Card 6</label><br>
-					<input type="radio" name = 'card' id="7" class="card" value="6">
-					<label id = "7l" for="7">Card 7</label><br>
-					<input type="radio" name = 'card' id="8" class="card" value="7">
-					<label id = "8l" for="8">Card 8</label><br>
-					<input type="radio" name = 'card' id="9" class="card" value="8">
-					<label id = "9l" for="9">Card 9</label><br>
-					<input type="radio" name = 'card' id="10" class="card" value=="9">
-					<label id = "10l" for="10">Card 10</label><br>
-					<input type="radio" name = 'card' id="11" class="card" value="10">
-					<label id = "11l" for="11">Card 11</label><br>
-					<input type="radio" name = 'card' id="12" class="card" value="11">
-					<label id = "12l" for="12">Card 12</label><br>
-					<input type="radio" name = 'card' id="13" class="card" value="12">
-					<label id = "13l" for="13">Card 13</label><br>
+					<input type="hidden" name = 'card' id="1" class="card" value="0">
+					<label id = "1l" for="1"></label><br>
+					<input type="hidden" name = 'card' id="2" class="card" value="1">
+					<label id = "2l"for="l"></label><br>
+					<input type="hidden" name = 'card' id="3" class="card" value="2">
+					<label id = "3l" for="3"></label><br>
+					<input type="hidden" name = 'card' id="4" class="card" value="3">
+					<label id = "4l" for="4"></label><br>
+					<input type="hidden" name = 'card' id="5" class="card" value="4">
+					<label id = "5l" for="5"></label><br>
+					<input type="hidden" name = 'card' id="6" class="card" value="5">
+					<label id = "6l" for="6"></label><br>
+					<input type="hidden" name = 'card' id="7" class="card" value="6">
+					<label id = "7l" for="7"></label><br>
+					<input type="hidden" name = 'card' id="8" class="card" value="7">
+					<label id = "8l" for="8"></label><br>
+					<input type="hidden" name = 'card' id="9" class="card" value="8">
+					<label id = "9l" for="9"></label><br>
+					<input type="hidden" name = 'card' id="10" class="card" value=="9">
+					<label id = "10l" for="10"></label><br>
+					<input type="hidden" name = 'card' id="11" class="card" value="10">
+					<label id = "11l" for="11"></label><br>
+					<input type="hidden" name = 'card' id="12" class="card" value="11">
+					<label id = "12l" for="12"></label><br>
+					<input type="hidden" name = 'card' id="13" class="card" value="12">
+					<label id = "13l" for="13"></label><br>
 				</form> 
 				<button onclick="processSelect();">Submit</button>
 			</center></td>
@@ -653,25 +653,35 @@ function packParser(pPack){ //Take a string and convert it into a readable pack
 }
 
 function packReader(rPack){ //Print the cards to the Radio Buttons
+	inputs = document.getElementsByName('card')
+	for(i = 0; i < inputs.length; i+=1){
+		inputs[i].setAttribute('type','hidden');
+		document.getElementById((i+1) + 'l').innerHTML = '';
+	}
+	
 	if(rPack == ["i"]){
 	}
 	else{
 		packSize = rPack.length;
 		for (i = 0; i < packSize; i+=1){
 			if(rPack[i].charAt(0) == 'a'){ //If starting character of card is a, use the Holo Extra array
+				inputs[i].setAttribute('type','radio');
 				document.getElementById((i+1)+'l').innerHTML = CCHoloExtra[parseInt(rPack[i].substring(1))];
-
 			}
 			else if(rPack[i].charAt(0) == 'b'){ //If starting character of card is a, use the Rare Common Extra array
+				inputs[i].setAttribute('type','radio');
 				document.getElementById((i+1)+'l').innerHTML = CCRareCommonExtra[parseInt(rPack[i].substring(1))];
 			}
 			else if(rPack[i].charAt(0) == 'c'){ //If starting character of card is a, use the Holo array
+				inputs[i].setAttribute('type','radio');
 				document.getElementById((i+1)+'l').innerHTML = CCHolo[parseInt(rPack[i].substring(1))];
 			}
 			else if(rPack[i].charAt(0) == 'd'){ //If starting character of card is a, use the Rare array
+				inputs[i].setAttribute('type','radio');
 				document.getElementById((i+1)+'l').innerHTML = CCRare[parseInt(rPack[i].substring(1))];
 			}
 			else if(rPack[i].charAt(0) == 'e'){ //If starting character of card is a, use the Common array
+				inputs[i].setAttribute('type','radio');
 				document.getElementById((i+1)+'l').innerHTML = CCCommons[parseInt(rPack[i].substring(1))];
 			}
 			else{
