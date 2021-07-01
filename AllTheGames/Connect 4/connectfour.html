@@ -128,150 +128,158 @@
 	<p><button class = "restart" onclick = "restart();">Restart</button>
 </center>
 <script>
-var players = 0;
-var different = document.getElementsByClassName("dropper");
-var allSlots = document.getElementsByClassName("slot");
-var black = true;
-var blankPic = '<center><img class = "slot" src = "blank.png"></center>';
-var turn = 1;
-var botColor = 0;
-var difficulty = 0;
-var winPoints = 1;
-var lossPoints = 1;
-var board = 
-[[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0]];
+var players = 0; //Will track if its a 1 or 2 player match
+var different = document.getElementsByClassName("dropper"); //Keep track of all dropper buttons
+var allSlots = document.getElementsByClassName("slot"); //Store all slots
+var black = true; //Track if its blacks turn
+var blankPic = '<center><img class = "slot" src = "blank.png"></center>'; //Store the pic for an empty slot
+var blackPic = '<center><img class = "slot" src = "blackPiece.png"></center>';
+var redPic = '<center><img class = "slot" src = "redPiece.png"></center>';
+var turn = 1; //Track turn number
+var botColor = 0; //Track the bots color
+var difficulty = 0; //Track the selected difficulty if there is a bot in the match
 
-var simBoard = 
-[[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0]];
-
-var weight06 = 1;
-var weight15 = 1.5;
-var weight24 = 1.75;
-var weight3 = 2;
+var board = //This will track the official board for the match
+[[0,0,0,0,0,0,0],
+ [0,0,0,0,0,0,0],
+ [0,0,0,0,0,0,0],
+ [0,0,0,0,0,0,0],
+ [0,0,0,0,0,0,0],
+ [0,0,0,0,0,0,0]
+];
 
 function turnChoice(){
-	document.getElementById("console").innerHTML = "<button onclick='botColor = 2; botLevelChoice();'>Black</button> <button onclick='botColor = 1; botLevelChoice();'>Red</button>";
+	document.getElementById("console").innerHTML = "<button onclick='botColor = 1; botLevelChoice();'>Black</button> <button onclick='botColor = 2; botLevelChoice();'>Red</button>";
 }
+
 function botLevelChoice(){
-	document.getElementById("console").innerHTML = "<button onclick='difficulty = 1; start();'>Easy</button> <button onclick='difficulty = 2; start();'>Medium</button> <button onclick='difficulty = 3; pointWeights();'>Hard</button>";
-}
-function pointWeights(){
-	document.getElementById("console").innerHTML = "How many points for winning? <br/> <button onclick='winPoints = 0; lossChoice();'>0</button> <button onclick='winPoints = 1; lossChoice();'>1</button> <button onclick='winPoints = 2; lossChoice();'>2</button>";
-}
-function lossChoice(){
-	document.getElementById("console").innerHTML = "How many points for losing? <br/> <button onclick='lossPoints = 0; start();'>0</button> <button onclick='lossPoints = 1; start();'>1</button> <button onclick='lossPoints = 2; start();'>2</button>";
+	document.getElementById("console").innerHTML = "<button onclick='difficulty = 1; start();'>Easy</button> <button onclick='difficulty = 2; start();'>Medium</button> <button onclick='difficulty = 3; start();'>Hard</button>";
 }
 
 function start(){
-	for(i = 0; i < 7; i+=1){
+	for(i = 0; i < 7; i+=1){ //Enable all buttons
 			different[i].disabled = false;
 	}
-	if(players == 1 && botColor == 1){
-		blackBot();
+	if(players == 1 && botColor == 2){//If its a bot game and the bot is black start with the bot
+		botMoves();
 	}
-	else{
+	else{//Otherwise, the the black human player goes first
 		document.getElementById("console").innerHTML = "Black's Turn";
 	}
 }
-function drop(col){
+
+function fillBoard(boardToFill){ //Fills display board with requested board state
+	for (r=0; r<6; r+=1){ //Repeat for every row, starting top ending bottom
+		for (c=0; c<7; c+=1){ //repeat for every column, starting left ending right
+			if(boardToFill[r][c] == 0){ //If space is empty, insert blankPic
+				document.getElementById("" + r + c).innerHTML = blankPic;
+			}
+			else if(boardToFill[r][c] == 1){//If space is a red piece, insert redPiece
+				document.getElementById("" + r + c).innerHTML = redPic;
+			}
+			else if(boardToFill[r][c] == 2){//If space is a black piece, insert blackPiece
+				document.getElementById("" + r + c).innerHTML = blackPic;
+			}
+			else{//Error hit, a piece was stored as something other than 0, 1, or 2
+				document.getElementById("console").innerHTML = "Board Fill Error - Invalid Board Piece Value";
+			}
+		}
+	}
+}
+
+function drop(col){//Updates the board with the legally selected drop
 	if(board[0][col] == 0){
-		if(black){
-			var tracker = 1;
-			var pic = '<center><img class = "slot" src = "blackPiece.png"></center>';
+		if(black){//If the dropper is black, set tracker to a black piece, set next move to red, display that is Red's turn
+			var tracker = 2;
 			black = false;
 			document.getElementById("console").innerHTML = "Red's Turn";
 		}
-		else{
-			var tracker = 2;
-			var pic = '<center><img class = "slot" src = "redPiece.png"></center>';
+		else{//If the dropper is red, set tracker to a red piece, set next move to black, display that is Blacks's turn
+			var tracker = 1;
 			black = true;
 			document.getElementById("console").innerHTML = "Black's Turn";
 		}
-		board[0][col] = tracker;
-		document.getElementById('0' + col).innerHTML = pic;
-		for(i = 1; i<6; i+=1){
+		board[0][col] = tracker;//Place a piece in the top row of the dropped column
+		for(i = 1; i<6; i+=1){//Lower it by one until it hits the bottom of the row
 			if(board[i][col] == 0){
 			board[i-1][col] = 0;
 			board[i][col] = tracker;
-			document.getElementById("" + i + col).innerHTML = pic;
-			document.getElementById("" + (i-1) + col).innerHTML = blankPic;
 			}	
 			else{break};
 		}
-		
-	}
-	if(test4win(board)){
-		document.getElementById("console").innerHTML = "Winner!";
-		for(i = 0; i < 7; i+=1){
-			different[i].disabled = true;
+		fillBoard(board); //When the piece is at rest, display the official board
+
+		if(test4win(board) > 0){//If theres a winner, say so and disable the drop buttons
+			if(test4win(board) == 1){document.getElementById("console").innerHTML = "Red Wins!";}
+			else{document.getElementById("console").innerHTML = "Black Wins!";}
+			for(i = 0; i < 7; i+=1){
+				different[i].disabled = true;
+			}
 		}
+		if(turn == 42){
+			document.getElementById("console").innerHTML = "It's hard to do this. Y'all tied.";
+		}
+		turn += 1;
 	}
-	if(turn == 42){
-		document.getElementById("console").innerHTML = "It's hard to do this. Y'all tied.";
+	else{//If a person selects an illegal drop, tell them. Also can help trouble shoot the bot
+		document.getElementById("console").innerHTML = "Cannot place in the selected slot";
 	}
-	turn += 1;
 }
 
 function playerMoves(col){
+	document.getElementById("log").innerHTML = '';
 	if(board[0][col] == 0){
 		drop(col);
-		if(players == 1 && !test4win(board)){
-			if(botColor == 1){blackBot();}
-			else if(botColor == 2){redBot();}
+		if(players == 1 && test4win(board) == 0){
+			botMoves();
 		}
 	}
 }
 
-function simDrop(col, simBlack){
-	if(simBoard[0][col] == 0){
-		if(simBlack){
-			tracker = 1;
-		}
-		else{
-			tracker = 2;
-		}
-		simBoard[0][col] = tracker;
-		for(i = 1; i<6; i+=1){
-			if(simBoard[i][col] == 0){
-			simBoard[i-1][col] = 0;
-			simBoard[i][col] = tracker;
+function simDrop(col, color, givenBoard){//Simulates a drop for a given board, color, and column
+	if(givenBoard[0][col] == 0){
+		for(i = 5; i>0; i--){
+			if(givenBoard[i][col] == 0){
+				givenBoard[i][col] = color;
+				break;
 			}	
-			else{break};
 		}
-		
 	}
+	return givenBoard;
 }
-function test4win(testBoard){
+
+function test4win(testBoard){//Returns 1 if red is a winner, 2 if black is a winner, 0 if there is not yet a winner
 	for(r = 5; r > -1; r-=1){
 		for(c = 0; c < 4; c+=1){
 			if(testBoard[r][c] != 0 & (testBoard[r][c] == testBoard[r][c + 1]) & (testBoard[r][c] == testBoard[r][c + 2]) & (testBoard[r][c] == testBoard[r][c + 3])){
-				return true;
+				return testBoard[r][c];
 			}
 		}			
 	}
 	for(c = 0; c<7; c+=1){
 		for(r = 5; r > 2; r-=1){
 			if(testBoard[r][c] != 0 & (testBoard[r][c] == testBoard[r - 1][c]) & (testBoard[r][c] == testBoard[r - 2][c]) & (testBoard[r][c] == testBoard[r - 3][c])){
-				return true;
+				return testBoard[r][c];
 			}
 		}
 	}
 	for(r = 5; r > 2; r-=1){
 		for(c = 0 ; c < 4; c+=1){
 			if(testBoard[r][c] != 0 & (testBoard[r][c] == testBoard[r - 1][c + 1]) & (testBoard[r][c] == testBoard[r - 2][c + 2]) & (testBoard[r][c] == testBoard[r - 3][c + 3])){
-				return true;
+				return testBoard[r][c];
 			}
 		}
 	}
 	for(r = 5; r > 2; r-=1){
 		for(c = 3 ; c < 7; c+=1){
 			if(testBoard[r][c] != 0 & (testBoard[r][c] == testBoard[r - 1][c - 1]) & (testBoard[r][c] == testBoard[r - 2][c - 2]) & (testBoard[r][c] == testBoard[r - 3][c - 3])){
-				return true;
+				return testBoard[r][c];
 			}
 		}
 	}
-	return false;
+	return 0;
 }
+
 function restart(){
 	black = true;
 	turn = 1;
@@ -284,1093 +292,786 @@ function restart(){
 	for(i = 0; i<42; i+=1){
 		allSlots[i].src = "blank.png"; 
 	}
+	document.getElementById("log").innerHTML = '';
 }
-function fillSimBoard(){
-	for(r = 0; r < 6; r+=1){
+
+function botMoves(){
+	if(difficulty == 1){drop(botChoice(2,botColor));}
+	else if(difficulty == 2){drop(botChoice(4,botColor));}
+	else if(difficulty == 3){drop(botChoice(6,botColor));}
+}
+
+function fillSimBoard(boardToCopy){//Fast way to copy the a given board without making the boards the same
+	var returningBoard = //This will be the board to return
+	[[0,0,0,0,0,0,0],
+ 	 [0,0,0,0,0,0,0],
+	 [0,0,0,0,0,0,0],
+	 [0,0,0,0,0,0,0],
+	 [0,0,0,0,0,0,0],
+	 [0,0,0,0,0,0,0]
+	];
+
+	for(r = 0; r < 6; r+=1){//Copy the board by each slot 
 		for(c = 0; c < 7; c +=1){
-			simBoard[r][c] = board[r][c];
+			returningBoard[r][c] = boardToCopy[r][c];
 		}
-	}
-}
-function blackBot(){
-	if(difficulty == 1){drop(blackBotEasyChoice());}
-	else if(difficulty == 2){drop(blackBotMedChoice());}
-	else if(difficulty == 3){drop(blackBotHardChoice());}
-}
-function redBot(){
-	if(difficulty == 1){drop(redBotEasyChoice());}
-	else if(difficulty == 2){drop(redBotMedChoice());}
-	else if(difficulty == 3){drop(redBotHardChoice());}
-}
-
-function blackBotEasyChoice(){
-	fillSimBoard();
-	var dont = []
-	var points = [0,0,0,0,0,0,0];
-	var pointChoice = 7;
-	if(turn == 1){
-		return 3;
-	}
-	else{
-		for(l = 0; l < 7; l+=1){
-			simDrop(l, true);
-			if(test4win(simBoard)){
-				return l;
-			}
-			else{fillSimBoard();}
-		}
-		for(l = 0; l < 7; l+=1){
-			simDrop(l, false);
-			if(test4win(simBoard)){
-				return l;
-			}
-			else{fillSimBoard();}
-		}
-		for(l = 0; l < 7; l+=1){
-			simDrop(l, true);
-			simDrop(l, false);
-			if(test4win(simBoard)){
-				dont.push(l);
-			}
-			fillSimBoard();
-		}
-		fillSimBoard();
-		for(l = 0; l < 7; l+=1){
-			if(simBoard[0][l] != 0){
-				points[l] = 0;
-			}
-			else{
-				simDrop(l, true);
-				if(dont.includes(l)){
-					points[l] = 0;
-				}
-				else{
-					for(rr = 1; rr < 5; rr+=1){
-						for(cc = 1; cc < 6; cc+=1){
-							if(simBoard[rr][cc] == 1){
-								if(simBoard[rr + 1][cc] == 1){
-									points[l] += 2;
-								}
-								else if(simBoard[rr + 1][cc] == 2){
-									points[l] += 1;
-								}
-								
-								if(simBoard[rr + 1][cc - 1] == 1){
-									points[l] += 2;
-								}
-								else if(simBoard[rr + 1][cc - 1] == 2){
-									points[l] += 1;
-								}
-								
-								if(simBoard[rr + 1][cc + 1] == 1){
-									points[l] += 2;
-								}
-								else if(simBoard[rr + 1][cc + 1] == 2){
-									points[l] += 1;
-								}
-								
-								if(simBoard[rr][cc - 1] == 1){
-									points[l] += 2;
-								}
-								else if(simBoard[rr][cc - 1] == 2){
-									points[l] += 1;
-								}
-								
-								if(simBoard[rr][cc + 1] == 1){
-									points[l] += 2;
-								}
-								else if(simBoard[rr][cc + 1] == 2){
-									points[l] += 1;
-								}
-								
-								if(simBoard[rr - 1][cc] == 1){
-									points[l] += 2;
-								}
-								else if(simBoard[rr - 1][cc] == 2){
-									points[l] += 1;
-								}
-								
-								if(simBoard[rr - 1][cc - 1] == 1){
-									points[l] += 2;
-								}
-								else if(simBoard[rr - 1][cc - 1] == 2){
-									points[l] += 1;
-								}
-								
-								if(simBoard[rr - 1][cc + 1] == 1){
-									points[l] += 2;
-								}
-								else if(simBoard[rr - 1][cc + 1] == 2){
-									points[l] += 1;
-								}
-							}
-						}
-					}
-					for(cc = 1; cc < 6; cc+=1){
-						if(simBoard[5][cc] == 1){
-							if(simBoard[5][cc - 1] == 1){
-								points[l] += 2;
-							}
-							else if(simBoard[5][cc - 1] == 2){
-								points[l] += 1;
-							}
-							
-							if(simBoard[4][cc - 1] == 1){
-								points[l] += 2;
-							}
-							else if(simBoard[4][cc - 1] == 2){
-								points[l] += 1;
-							}
-							
-							if(simBoard[4][cc] == 1){
-								points[l] += 2;
-							}
-							else if(simBoard[4][cc] == 2){
-								points[l] += 1;
-							}
-							
-							if(simBoard[4][cc + 1] == 1){
-								points[l] += 2;
-							}
-							else if(simBoard[4][cc + 1] == 2){
-								points[l] += 1;
-							}
-							
-							if(simBoard[5][cc + 1] == 1){
-								points[l] += 2;
-							}
-							else if(simBoard[5][cc + 1] == 2){
-								points[l] += 1;
-							}
-						}
-						
-						
-						if(simBoard[0][cc] == 1){
-							if(simBoard[0][cc - 1] == 1){
-								points[l] += 2;
-							}
-							else if(simBoard[0][cc - 1] == 2){
-								points[l] += 1;
-							}
-							
-							if(simBoard[1][cc - 1] == 1){
-								points[l] += 2;
-							}
-							else if(simBoard[1][cc - 1] == 2){
-								points[l] += 1;
-							}
-							
-							if(simBoard[1][cc] == 1){
-								points[l] += 2;
-							}
-							else if(simBoard[1][cc] == 2){
-								points[l] += 1;
-							}
-							
-							if(simBoard[1][cc + 1] == 1){
-								points[l] += 2;
-							}
-							else if(simBoard[1][cc + 1] == 2){
-								points[l] += 1;
-							}
-							
-							if(simBoard[0][cc + 1] == 1){
-								points[l] += 2;
-							}
-							else if(simBoard[0][cc + 1] == 2){
-								points[l] += 1;
-							}
-						}
-					}
-					for(rr = 1; rr < 5; rr+=1){
-						if(simBoard[rr][0] == 1){
-							if(simBoard[rr - 1][0] == 1){
-								points[l]+=2;
-							}
-							else if(simBoard[rr - 1][0] == 2){
-								points[l]+=1;
-							}
-							if(simBoard[rr - 1][1] == 1){
-								points[l]+=2;
-							}
-							else if(simBoard[rr - 1][1] == 2){
-								points[l]+=1;
-							}
-							if(simBoard[rr][1] == 1){
-								points[l]+=2;
-							}
-							else if(simBoard[rr][1] == 2){
-								points[l]+=1;
-							}
-							if(simBoard[rr + 1][1] == 1){
-								points[l]+=2;
-							}
-							else if(simBoard[rr + 1][1] == 2){
-								points[l]+=1;
-							}
-							if(simBoard[rr + 1][0] == 1){
-								points[l]+=2;
-							}
-							else if(simBoard[rr + 1][0] == 2){
-								points[l]+=1;
-							}
-						}
-						
-						
-						if(simBoard[rr][6] == 1){
-							if(simBoard[rr - 1][6] == 1){
-								points[l]+=2;
-							}
-							else if(simBoard[rr - 1][6] == 2){
-								points[l]+=1;
-							}
-							if(simBoard[rr - 1][5] == 1){
-								points[l]+=2;
-							}
-							else if(simBoard[rr - 1][5] == 2){
-								points[l]+=1;
-							}
-							if(simBoard[rr][5] == 1){
-								points[l]+=2;
-							}
-							else if(simBoard[rr][5] == 2){
-								points[l]+=1;
-							}
-							if(simBoard[rr + 1][5] == 1){
-								points[l]+=2;
-							}
-							else if(simBoard[rr + 1][5] == 2){
-								points[l]+=1;
-							}
-							if(simBoard[rr + 1][6] == 1){
-								points[l]+=2;
-							}
-							else if(simBoard[rr + 1][6] == 2){
-								points[l]+=1;
-							}
-						}
-					}
-					if(simBoard[0][0] == 1){
-						if(simBoard[0][1] == 1){
-							points[l] += 2;
-						}
-						else if(simBoard[0][1] == 2){
-							points[l] += 1;
-						}
-						if(simBoard[1][1] == 1){
-							points[l] += 2;
-						}
-						else if(simBoard[1][1] == 2){
-							points[l] += 1;
-						}
-						if(simBoard[1][0] == 1){
-							points[l] += 2;
-						}
-						else if(simBoard[1][0] == 2){
-							points[l] += 1;
-						}
-					}
-					if(simBoard[0][6] == 1){
-						if(simBoard[0][5] == 1){
-							points[l] += 2;
-						}
-						else if(simBoard[0][5] == 2){
-							points[l] += 1;
-						}
-						if(simBoard[1][5] == 1){
-							points[l] += 2;
-						}
-						else if(simBoard[1][5] == 2){
-							points[l] += 1;
-						}
-						if(simBoard[1][6] == 1){
-							points[l] += 2;
-						}
-						else if(simBoard[1][6] == 2){
-							points[l] += 1;
-						}
-					}
-					if(simBoard[5][0] == 1){
-						if(simBoard[5][1] == 1){
-							points[l] += 2;
-						}
-						else if(simBoard[5][1] == 2){
-							points[l] += 1;
-						}
-						if(simBoard[4][1] == 1){
-							points[l] += 2;
-						}
-						else if(simBoard[4][1] == 2){
-							points[l] += 1;
-						}
-						if(simBoard[4][0] == 1){
-							points[l] += 2;
-						}
-						else if(simBoard[4][0] == 2){
-							points[l] += 1;
-						}
-					}
-					if(simBoard[5][6] == 1){
-						if(simBoard[5][5] == 1){
-							points[l] += 2;
-						}
-						else if(simBoard[5][5] == 2){
-							points[l] += 1;
-						}
-						if(simBoard[4][5] == 1){
-							points[l] += 2;
-						}
-						else if(simBoard[4][5] == 2){
-							points[l] += 1;
-						}
-						if(simBoard[4][6] == 1){
-							points[l] += 2;
-						}
-						else if(simBoard[4][6] == 2){
-							points[l] += 1;
-						}
-					}
-				}	
-			}
-			fillSimBoard();
-		}
-		for(l = 0; l<7; l++){
-			if(board[0][l] == 0 && !dont.includes(l)){pointChoice = l; break;}
-		}
-		if(pointChoice == 7){
-			for(l = 0; l<7; l++){
-				if(board[0][l] == 0){pointChoice = l; break;}
-			}
-		}
-		for(maxi = 0; maxi < 7; maxi+=1){
-			if((points[maxi] > points[pointChoice]) && (!dont.includes(maxi)) && (board[0][maxi] == 0)){
-				pointChoice = maxi;
-			}
-		}
-		return pointChoice;
-		
 	}
 	
+	return returningBoard;
 }
 
-function blackBotMedChoice(){
-	fillSimBoard();
-	var dont = []
-	var points = [0,0,0,0,0,0,0];
-	var pointChoice = 7;
-	var proxyTurn = turn;
-	var turnsAhead = 10;
-	var blackCoinSim = false;
-	var simSlot = 0;
-	var pattern = [];
-	var count = 0;
-	if(turn == 1){
-		return 3;
+function botChoice(turnsAhead,color){
+	var simBoard = fillSimBoard(board);
+	var allScoresC;
+	var options;
+	var theChoice;
+	var opp;
+
+	if(color == 1){opp = 2;}
+	else{opp = 1;}
+
+	for(l = 0; l < 7; l+=1){
+		simBoard = simDrop(l, color, simBoard);
+		if(test4win(simBoard) == color){
+			return l;
+		}
+		else{simBoard = fillSimBoard(board);}
 	}
-	else{
-		for(l = 0; l < 7; l+=1){
-			simDrop(l, true);
-			if(test4win(simBoard)){
-				return l;
-			}
-			else{fillSimBoard();}
+	for(l = 0; l < 7; l+=1){
+		simBoard = simDrop(l, opp, simBoard);
+		if(test4win(simBoard) == opp){
+			return l;
 		}
-		for(l = 0; l < 7; l+=1){
-			simDrop(l, false);
-			if(test4win(simBoard)){
-				return l;
+		else{simBoard = fillSimBoard(board);}
+	}
+
+	allScoresC = scoreEachPattern(simBoard,turnsAhead,color)
+	options = processScores(allScoresC,turnsAhead);
+	theChoice = finalChoice(options);
+	
+	return theChoice;
+}
+
+function scoreEachPattern(boardToScore, turns, color){//This will be called to score every pattern for a set amount of moves, given a starting board and bot color
+	var pattern = new Array(turns).fill(0); //Set the pattern length to the number of turns and set all values to 0
+	var allScores = new Array(Math.pow(7,pattern.length)); //Create an array with room to store the score of every pattern
+	var simColor = color; //Track the current color of the piece to be dropped 
+	let patternsChecked = 0; //Track how many patterns have been checked
+	var simBoard; //Store the board were testing
+	var opp; //Opponent's piece color
+	var patternScored = false; //Will track if the current pattern has aleready been scored
+	var test = 0; //Stores test4win result
+
+	if (color == 1){opp = 2;} //Set opponent color to opposite of bot's
+	else{opp = 1;}
+
+	do{//This will loop for each pattern and score it
+		simBoard = fillSimBoard(boardToScore); //Reset board before next patter
+		patternScored = false; //Reset before loop
+
+		for(t = 0; t < pattern.length; t++){//Run this for each turn in the pattern
+			if(t % 2 == 0){simColor = color}//If its an even turn, its the bot
+			else{simColor = opp};//Odd turn, its the player
+
+			if(simBoard[0][pattern[t]] != 0){ //If the turn is invalid, the pattern is invalid. Score it as such and break.
+				allScores[findScorePosition(pattern)] = 'i';
+				patternScored = true;
+				break;
 			}
-			else{fillSimBoard();}
-		}
-		for(l = 0; l < 7; l+=1){
-			simDrop(l, true);
-			simDrop(l, false);
-			if(test4win(simBoard)){
-				dont.push(l);
+			else{
+				simBoard = simDrop(pattern[t],simColor,simBoard); //If you can drop though, sim a drop
 			}
-			fillSimBoard();
+
+			test = test4win(simBoard); //After drop, check if theres a win
+			if(test == color){
+				allScores[findScorePosition(pattern)] = 'w'; //If bot has a win, score is w
+				patternScored = true; 
+				break;
+			}
+			else if(test == opp){
+				allScores[findScorePosition(pattern)] = 'l'; //If person has a win, score is l
+				patternScored = true;
+				break;
+			}
 		}
-		fillSimBoard();
-		for(testingSlot = 0; testingSlot < 7; testingSlot++){
-			fillSimBoard();
-			pattern = [0,0,0]; //turns order
-			while(pattern[0] < 7){
-				fillSimBoard();
-				simDrop(testingSlot,true);
-				blackCoinSim = false;
-				for(turnSim = 0; turnSim < pattern.length; turnSim++){
-					if(simBoard[0][pattern[turnSim]] != 0){
-						break;
-					}
-					else{
-						simDrop(pattern[turnSim],blackCoinSim);
-						if(test4win(simBoard)){
-							if(blackCoinSim){points[testingSlot] += 1;}
-							else{points[testingSlot] -= 1;}
-							break;
+		if(!patternScored){
+			allScores[findScorePosition(pattern)] = boardScore(simBoard,color); //If there isnt yet a clear winner, score the board 
+		}
+
+
+		for(turnEdit = (pattern.length - 1); turnEdit >= 0; turnEdit--){ //Increment the pattern
+			if(pattern[turnEdit] == 6){//If the current turn being incremented is already at 6, reset it to 0, move to next
+				pattern[turnEdit] = 0;
+			}
+			else{
+				pattern[turnEdit] += 1; //If the turn is below 6, increment and break. This is the next pattern
+				break;
+			}
+		}
+		patternsChecked++; //Add one to number of patterns checked
+	}while(patternsChecked < allScores.length); //Do this until every pattern has been checked
+
+
+	return allScores; //Return the score for each pattern
+}
+
+function findScorePosition(pattern){
+	var position = 0;
+	for(c = 0; c < pattern.length; c+=1){
+		position += pattern[c]*Math.pow(7,pattern.length - 1 - c);
+	}
+	return position;
+}
+
+function boardScore(scoreBoard,color){//Color will be self's color
+	var boardScore = 0; //This will return the score for the board
+
+	var opp = 0;	
+	if(color==1){opp = 2;}//If were red, theyre black
+	else{opp = 1;}//Else theyre red
+
+	var selfAdjCount = adjOpenCount(scoreBoard,color);
+	var oppAdjCount = adjOpenCount(scoreBoard,opp);
+	var selfLinksCount = linkCount(scoreBoard,color,true);
+	var oppLinksCount = linkCount(scoreBoard,opp,false);
+	var selfLinkTotals = [0,0,0,0];//[Trip Place,Double Place, Trip Non-Place, Double Non-Place]
+	var oppLinkTotals = [0,0,0,0];//[Trip Place,Double Place, Trip Non-Place, Double Non-Place]
+	var win = false;
+	var loss = false;
+	var placeableRow = true;
+	var placeableDiag = true;
+
+	for(k=0;k<selfLinksCount.length;k+=1){//Totals all links types for self
+		selfLinkTotals[0] += selfLinksCount[k][0]
+		selfLinkTotals[1] += selfLinksCount[k][1]
+		selfLinkTotals[2] += selfLinksCount[k][2]
+		selfLinkTotals[3] += selfLinksCount[k][3]
+	}
+
+	for(k=0;k<oppLinksCount.length;k+=1){//Totals all link types for opponent
+		oppLinkTotals[0] += oppLinksCount[k][0]
+		oppLinkTotals[1] += oppLinksCount[k][1]
+		oppLinkTotals[2] += oppLinksCount[k][2]
+		oppLinkTotals[3] += oppLinksCount[k][3]
+	}
+
+	if(selfLinkTotals[0]>0){//If theres at least 1 self triple placeable, its a win
+		win = true;
+		boardScore = 'w';
+		return boardScore;
+	}
+	else if(oppLinkTotals[0]>1){//If we dont have a win next turn and the opponent has more than 2 triple placeables, its a loss
+		loss = true;
+		boardScore = 'l';
+		return boardScore;
+	}
+	else if(oppLinkTotals[0]==0){//If its not a loss or win, and the opponent cant win next turn, check for a self second priority win.
+		//NOTE: This currently can miss second priority wins if the opp triple's win spot is the same as the second priority win spot. This can be an improvement in the future
+		for(line=0;line<6;line+=1){//This will look for second priority wins HORIZONTAL
+			if(selfLinksCount[line][1] > 1){//If a row has more than 1 Double Placeable, check for a win
+				placeableRow = true;
+				if(line==5){ //If were on the bottom row its a win
+					win = true;
+					boardScore = 'w';
+					return boardScore;
+				}
+				else{//If were above the bottom row, confirm the whole row is placeable
+					//NOTE: This can miss a second priority win if 1 slot is not placeable and its still a second priority win. Sad but can improve later
+					for(checkedColumn=0; checkedColumn<7; checkedColumn+=1){//If any column is unplaceable, its an unplaceable row
+						if(scoreBoard[line+1][checkedColumn] == 0){
+							placeableRow = false;
 						}
-						blackCoinSim = !blackCoinSim;
+					}
+					if(placeableRow==true){//If the row is placeable, its a win
+						win = true;
+						boardScore = 'w';
+						return boardScore;
 					}
 				}
-				if(pattern[pattern.length - 1] < 6){pattern[pattern.length - 1]++;}
-				else{
-					count = 1;
-					while(pattern[pattern.length - count] == 6){
-						pattern[pattern.length - count] = 0;
-						count++;
-						if(count == pattern.length) {break;}
+			}
+		}
+		for(diag=9;diag<11;diag+=1){//Check length 6 left diags for second priority win DIAGONAL
+			if(selfLinksCount[diag][1]>2 && !(scoreBoard[5][diag-9]==color && scoreBoard[4][diag-8]==color && scoreBoard[1][diag-5]==color && scoreBoard[0][diag-4]==color)){
+				//If there are 3 double placeaables and slots 0,1,4,5 are not all filled its a win
+				win = true;
+				boardScore = 'w';
+				return boardScore;
+			}
+		}
+		for(diag=15;diag<17;diag+=1){//Check length 6 right diags for second priority win DIAGONAL
+			if(selfLinksCount[diag][1]>2 && !(scoreBoard[5][diag-10]==color && scoreBoard[4][diag-11]==color && scoreBoard[1][diag-14]==color && scoreBoard[0][diag-15]==color)){
+				//If there are 3 double placeaables and slots 0,1,4,5 are not all filled its a win
+				win = true;
+				boardScore = 'w';
+				return boardScore;
+			}
+		}
+	}
+
+	//If none of the above triggered a return, its anyones game. Now we just score based on a points system
+	boardScore += (selfAdjCount - oppAdjCount); //Add the self adjacents and then reduce by the opp's adjacents
+	boardScore -= (oppLinkTotals[0] * 30); //We know we cant win next turn and opponent forces our immediate move. Very bad.
+	boardScore += ((selfLinkTotals[1] * 15) - (oppLinkTotals[1] * 15)); //Double placeables are strong. But will count equally for you and opponent
+	boardScore += ((selfLinkTotals[2] * 25) - (oppLinkTotals[2] * 25)); //Triple Non-Placeables force the other player to avoid a slot. Will be counted heavily
+	boardScore += ((selfLinkTotals[3] * 10) - (oppLinkTotals[3] * 10)); //Double Non-Placeables are helpful to build strategy but dont gaurantee anything
+
+	return boardScore;
+}
+
+//NEW CODE
+//Counts the number of links of each type: Triple Placeable, Double Placeable, Triple-non, Double-non. Will ignore links that cannot be extended
+function finalChoice(selection){//This will make the final bot selection. If it returns i, this was called incorrectly
+	var returnI = true;
+	var returnL = true;
+	var value = selection[0];
+	var start = 1;
+	var slot = 0;
+
+	if(value == 'i'){//If the first value is i, check if theyre all i
+		for (s = 1; s < selection.length; s++) {
+			if (selection[s] != 'i'){
+				returnI = false; //Well have to do a comparison
+				value = selection[s]; // The non-i value is the new selected value
+				start = s + 1; //Start comparing the new selected value with the next slot in line
+				slot = s;
+				break;
+			}
+		}
+		if(returnI){console.log('Matt messed up');return 0;} //If all of the values are illegal, just output illegal
+	}
+	else if(value == 'l'){//If the first value is l, check if theyre all l and/or i
+		for (s = 1; s < selection.length; s++) {
+			if (selection[s] != 'l' && selection[s] != 'i'){
+				returnL = false; //Well have to do a comparison
+				value = selection[s]; // The non-l value is the new selected value
+				start = s + 1; //Start comparing the new selected value with the next slot in line
+				slot = s;
+				break;
+			}
+		}
+		if(returnL){return 0;} //If all of the values are wins, just output win
+	}
+	else if(value == 'w'){//If the first value is l, just return l
+		document.getElementById("log").innerHTML = "The bot thinks you already lost";
+		return 0;
+	}
+	//All i's should be filtered by now
+	while(start < 7){ //If we havent returned yet, process the rest
+		if(selection[start] == 'w'){//First check if the next value is l. Return if so
+			document.getElementById("log").innerHTML = 'GG bruv'
+			return start;
+		}//If its not l, compare below
+		else if(value == 'w'){
+			document.getElementById("log").innerHTML = 'Better luck next time. It knows.'
+			return slot;
+		}
+		else if(value == 'l' && selection[start] != 'l' && selection[start] != 'i'){//If its not l, compare. Special process for w
+			value = selection[start]; //If the current value is w, and the following value is not i or w, set the value equal the following value
+			slot = start;
+		}
+		else if(value != 'l' && selection[start] != 'l' && selection[start] != 'i' && value < selection[start] ){//At this point we verify value is a number. If its bigger than the next number, keep it as the best choice
+			value = selection[start];
+			slot = start;
+		}
+		//If none of the above, the current value is the best choice
+		start++;
+	}
+	//When this is complete, we should have the best options possible.
+	return slot; //Return the best score
+
+
+}
+
+function processScores(allScores,turns){//Go through all scores and determine which slot to play
+	var aLength = allScores.length;
+	var selection = ['p','p','p','p','p','p','p'];
+	var finalSelection = ['p','p','p','p','p','p','p'];
+	for(t = turns-1; t > 0; t--){//Repeat the elimination process until there are only 7 scores remaining
+		for(k = 0; k<(Math.pow(7,t));k++){//Process every slot outcome
+			for(c = 0; c < 7; c++){
+				selection[c] = allScores[((k*7) + c)]; //Fill selection with the current set of outcomes
+			}
+			if(t%2==0){//Self
+				allScores[k] = filterSelf(selection);
+			}
+			else{//Enemy
+				allScores[k] = filterOpp(selection);
+			}
+		}
+	}
+	for(c = 0; c < 7; c++){
+		finalSelection[c] = allScores[c]; //Grab the final 7 numbers
+	}
+
+	return finalSelection;
+}
+
+function filterOpp(selection){//Given seven slots with given scores, this will determine the best or only choice for the opponent.
+	var returnI = true;
+	var returnW = true;
+	var value = selection[0];
+	var start = 1;
+
+	if(value == 'i'){//If the first value is i, check if theyre all i
+		for (s = 1; s < selection.length; s++) {
+			if (selection[s] != 'i'){
+				returnI = false; //Well have to do a comparison
+				value = selection[s]; // The non-i value is the new selected value
+				start = s + 1; //Start comparing the new selected value with the next slot in line
+				break;
+			}
+		}
+		if(returnI){return 'i';} //If all of the values are illegal, just output illegal
+	}
+	else if(value == 'w'){//If the first value is w, check if theyre all w and/or i
+		for (s = 1; s < selection.length; s++) {
+			if (selection[s] != 'w' && selection[s] != 'i'){
+				returnW = false; //Well have to do a comparison
+				value = selection[s]; // The non-w value is the new selected value
+				start = s + 1; //Start comparing the new selected value with the next slot in line
+				break;
+			}
+		}
+		if(returnW){return 'w';} //If all of the values are illegal, just output illegal
+	}
+	else if(value == 'l'){//If the first value is l, just return l
+		return 'l';
+	}
+	//All i's should be filtered by now
+	while(start < 7){ //If we havent returned yet, process the rest
+		if(value == 'l' || selection[start] == 'l'){//First check if the next value is l. Return if so
+			return 'l';
+		}//If its not l, compare below
+		else if(value == 'w' && selection[start] != 'w' && selection[start] != 'i'){//If its not l, compare. Special process for w
+			value = selection[start]; //If the current value is w, and the following value is not i or w, set the value equal the following value
+		}
+		else if(value != 'w' && value > selection[start] && selection[start] != 'w' && selection[start] != 'i'){//At this point we verify value is a number. If its bigger than the next number, keep it as the best choice
+			value = selection[start];
+		}
+		//If none of the above, the current value is the best choice
+		start++;
+	}
+	//When this is complete, we should have the best options possible.
+	//console.log('Value: ' + value + 'Selection: ' + selection);
+	return value; //Return the best score
+}
+
+function filterSelf(selection){//Given seven slots with given scores, this will determine the best or only choice for the opponent.
+	var returnI = true;
+	var returnL = true;
+	var value = selection[0];
+	var start = 1;
+
+	if(value == 'i'){//If the first value is i, check if theyre all i
+		for (s = 1; s < selection.length; s++) {
+			if (selection[s] != 'i'){
+				returnI = false; //Well have to do a comparison
+				value = selection[s]; // The non-i value is the new selected value
+				start = s + 1; //Start comparing the new selected value with the next slot in line
+				break;
+			}
+		}
+		if(returnI){return 'i';} //If all of the values are illegal, just output illegal
+	}
+	else if(value == 'l'){//If the first value is l, check if theyre all l and/or i
+		for (s = 1; s < selection.length; s++) {
+			if (selection[s] != 'l' && selection[s] != 'i'){
+				returnL = false; //Well have to do a comparison
+				value = selection[s]; // The non-l value is the new selected value
+				start = s + 1; //Start comparing the new selected value with the next slot in line
+				break;
+			}
+		}
+		if(returnL){return 'l';} //If all of the values are wins, just output win
+	}
+	else if(value == 'w'){//If the first value is l, just return l
+		return 'w';
+	}
+	//All i's should be filtered by now
+	while(start < 7){ //If we havent returned yet, process the rest
+		if(value == 'w' || selection[start] == 'w'){//First check if the next value is l. Return if so
+			return 'w';
+		}//If its not l, compare below
+		else if(value == 'l' && selection[start] != 'l' && selection[start] != 'i'){//If its not l, compare. Special process for w
+			value = selection[start]; //If the current value is w, and the following value is not i or w, set the value equal the following value
+
+		}
+		else if(value != 'l' && selection[start] != 'l' && selection[start] != 'i' && value < selection[start] ){//At this point we verify value is a number. If its bigger than the next number, keep it as the best choice
+			value = selection[start];
+		}
+		//If none of the above, the current value is the best choice
+		start++;
+	}
+	//When this is complete, we should have the best options possible.
+	return value; //Return the best score
+}
+
+function scoreEachPattern(boardToScore, turns, color){
+	var pattern = new Array(turns).fill(0);
+	var allScores = new Array(Math.pow(7,pattern.length));
+	var turnSim = 0;
+	var simColor = color;
+	let patternsChecked = 0;
+	var simBoard;
+	var opp;
+	var patternScored = false;
+	var test = 0;
+
+	if (color == 1){opp = 2;}
+	else{opp = 1;}
+
+	do{
+		simBoard = fillSimBoard(boardToScore);
+		patternScored = false;
+
+		for(t = 0; t < pattern.length; t++){
+			if(t % 2 == 0){simColor = color}
+			else{simColor = opp};
+
+			if(simBoard[0][pattern[t]] != 0){
+				allScores[findScorePosition(pattern)] = 'i';
+				patternScored = true;
+				break;
+			}
+			else{
+				simBoard = simDrop(pattern[t],simColor,simBoard);
+			}
+
+			test = test4win(simBoard);
+			if(test == color){
+				allScores[findScorePosition(pattern)] = 'w';
+				patternScored = true; 
+				break;
+			}
+			else if(test == opp){
+				allScores[findScorePosition(pattern)] = 'l';
+				patternScored = true;
+				break;
+			}
+		}
+		if(!patternScored){
+			allScores[findScorePosition(pattern)] = boardScore(simBoard,color);
+		}
+
+
+		for(turnEdit = (pattern.length - 1); turnEdit >= 0; turnEdit--){
+			if(pattern[turnEdit] == 6){
+				pattern[turnEdit] = 0;
+			}
+			else{
+				pattern[turnEdit] += 1;
+				break;
+			}
+		}
+		patternsChecked++;
+	}while(patternsChecked < allScores.length);
+
+
+	return allScores;
+}
+
+
+function linkCount(countBoard,color,self){ //color will represent the tested color, not the bot's color specifically. So if self = false, color will be the opponents color //self = true if bot is checking its own pieces, 'N' if checking opponent's
+	var linkTracker = [//Tracks all links we care about
+		//These will go [(0)Triple Placeable, (1)Double Placeable, (2)Triple Non-Placeable, (3)Double Non-Placeable]
+		[0,0,0,0], //Row 0 Top
+		[0,0,0,0], //Row 1
+		[0,0,0,0], //Row 2
+		[0,0,0,0], //Row 3
+		[0,0,0,0], //Row 4
+		[0,0,0,0], //Row 5 Bottom
+		[0,0,0,0], //Vertical (Non-Placeables will always be 0) Row 6 of this array
+		[0,0,0,0], //Diagonal [3,0] Row 7 Diag 1
+		[0,0,0,0], //Diagonal [4,0] Row 8 Diag 2
+		[0,0,0,0], //Diagonal [5,0] Row 9 Diag 3
+		[0,0,0,0], //Diagonal [5,1] Row 10 Diag 4
+		[0,0,0,0], //Diagonal [5,2] Row 11 Diag 5
+		[0,0,0,0], //Diagonal [5,3] Row 12 Diag 6
+		[0,0,0,0], //Diagonal [3,6] Row 13 Diag 7
+		[0,0,0,0], //Diagonal [4,6] Row 14 Diag 8
+		[0,0,0,0], //Diagonal [5,6] Row 15 Diag 9
+		[0,0,0,0], //Diagonal [5,5] Row 16 Diag 10
+		[0,0,0,0], //Diagonal [5,4] Row 17 Diag 11
+		[0,0,0,0]  //Diagonal [5,3] Row 18 Diag 12
+	]
+
+	var place = 0; //Says if the current slot is a placeable when 1
+	var gr = 0; //Function's global reference to row. Switched from r to gr because we like to use r in for loops
+	var match = 0; //Will trigger if there is a match to what we want = 1
+	var pairType = 4; //Used in Horizontal Processing. Will track an individaul pairs type
+	var diagCountOrderLeft  = [[3,0,1],[4,0,2],[5,0,3],[5,1,3],[5,2,2],[5,3,1]]; //Diagonal starting order left to right. 3rd column is how many pairs are in the diagonal
+	var diagCountOrderRight = [[3,6,1],[4,6,2],[5,6,3],[5,5,3],[5,4,2],[5,3,1]]; //Diagonal starting order right to left
+	var diagRow = 0; //Diagonal Pair Starting Row
+	var diagCol = 0; //Diagonal Pair Starting Pair
+
+
+	var opp = 0;
+	if(color == 1){opp = 2} //If the person being checked is red, the opponent is black
+	else{opp = 1;} //If the person being checked is black, the opponent is red
+
+	//VERTICAL
+	//Will count all vertical links for the associated color, for placeable. Vertical cant really be non-placeable.
+	for(c=0;c<7;c+=1){//Go column by column
+		place = 0;//Reset checker and row
+		gr = 0;
+		match = 0;
+		if(countBoard[0][c] > 0){//If the column is full, dont bother
+			place = 1; 
+		}
+		else{//If column has at least one empty slot, start processing
+			while(place == 0 && gr!=4){ //Look for the linkable row. Stop at 4 because then it cant be more than 1
+				if(countBoard[gr+1][c] == color){ //If the row below matches the associated color, we found bottom and can confirm a match
+					place = 1;
+					match = 1;
+				}
+				else if(countBoard[gr+1][c] > 0 && countBoard[gr+1][c] != color){//If below column is filled, but doesnt match associated color, we found bottom but its not a link, no match
+					place = 1;
+				}
+				else{//Else, check next row
+					gr+=1;
+				}
+			}
+			if(match == 1){//If we found a match, count how long the link is and add a point to the proper counter
+				if(countBoard[gr+2][c] == color){//If the link is at least 2, determine if its 2 or 3
+					if(gr < 3){//Only check for triple link if row height makes it possible
+						if(countBoard[gr+3][c] == color){//If 3 pieces match in a row, add a count to Vertical Triple Placeable
+							linkTracker[6][0] += 1;
+							if(self){return linkTracker;} //Anytime we find a win for self, we will return so that the next process declares a win and saves time
+						}
+						else{//If not, its a double link
+							linkTracker[6][1] += 1;
+						}
 					}
-					pattern[pattern.length - count]++;
+					else{//Dont check for third if not possible. Its a double
+						linkTracker[6][1] += 1;
+					}
+					
 				}
 			}
 		}
-		fillSimBoard();
-		for(l = 0; l<7; l++){
-			if(board[0][l] == 0 && !dont.includes(l)){pointChoice = l; break;}
+	}
+	//Done checking all vertical columns. Next is Horizontal
+	
+	//HORIZONTAL
+	//This will count all horizontal extendable links. This is run with separate function calls because holy moly theres a lot we care about
+	//Im scared
+	for(r=5; r>=0; r-=1){//Go row by row, start with bottom row
+		if(countBoard[r][0]!=0 && countBoard[r][1]!=0 && countBoard[r][2]!=0 && countBoard[r][3]!=0 && countBoard[r][4]!=0 && countBoard[r][5]!=0 && countBoard[r][6]!=0){
+			//Will check if row is full. If it is, Skip to next
 		}
-		if(pointChoice == 7){
-			for(l = 0; l<7; l++){
-				if(board[0][l] == 0){pointChoice = l; break;}
+		else if(self){//This will be the checking process if you are checking for the bot.
+			for(c=0;c<4;c+=1){//We check column pairs. After we check with a starting position of column 3, weve checked all pairs
+				if(countBoard[r][c]==opp || countBoard[r][c+1]==opp || countBoard[r][c+2]==opp || countBoard[r][c+3]==opp){//If any spaces are taken by the opponent, skip pair
+					//Do nothing
+				}
+				else if (countBoard[r][c]==0 && countBoard[r][c+1]==0 && countBoard[r][c+2]==0 && countBoard[r][c+3]==0){//If the pair is empty, skip. 0 Points
+					//Do nothing
+				}
+				else{//If its not empty or has a opp taken space, process pair for links
+					pairType = horizontalPairCalc(countBoard,r,c);
+					if(pairType < 4){
+						linkTracker[r][pairType] += 1;
+						if(pairType==0){return linkTracker;} //If we find a triple placeable for self, were done. Its a win.
+					}
+				}
 			}
 		}
-		for(maxi = 0; maxi < 7; maxi+=1){
-			if((points[maxi] > points[pointChoice]) && (!dont.includes(maxi)) && (board[0][maxi] == 0)){
-				pointChoice = maxi;
+		else{//Self is false, were checking for opponent
+			for(c=0;c<4;c+=1){//We check column pairs. After we check with a starting position of column 3, weve checked all pairs
+				if(countBoard[r][c]==opp || countBoard[r][c+1]==opp || countBoard[r][c+2]==opp || countBoard[r][c+3]==opp){//If any spaces are taken by the opponent, skip pair
+					//Do nothing
+				}
+				else if (countBoard[r][c]==0 && countBoard[r][c+1]==0 && countBoard[r][c+2]==0 && countBoard[r][c+3]==0){//If the pair is empty, skip. 0 Points
+					//Do nothing
+				}
+				else{//If its not empty or has a opp taken space, process pair for links
+					pairType = horizontalPairCalc(countBoard,r,c);
+					if(pairType < 4){
+						linkTracker[r][pairType] += 1;
+					}
+				}
 			}
 		}
-		return pointChoice;
 	}
 	
+	//DIAGONAL
+	//Holy cow we managed to figure out horizontal processing. Next is diagonal. I have no idea what to do yet.
+	for(i=0;i<6;i+=1){//Left diagonals checker
+		diagRow = diagCountOrderLeft[i][0]; //Save the row so I dont  have to type that every time
+		diagCol = diagCountOrderLeft[i][1]; //Save the col so I dont have to type that every time
+		for(p=0; p<diagCountOrderLeft[i][2]; p+=1){//Do this for each pair in the diagonal
+			if(countBoard[diagRow-p][diagCol+p]==opp || countBoard[diagRow-1-p][diagCol+1+p]==opp || countBoard[diagRow-2-p][diagCol+2+p]==opp || countBoard[diagRow-3-p][diagCol+3+p]==opp){//If any spaces are taken by the opponent, skip pair
+				//Do nothing
+			}
+			else if (countBoard[diagRow-p][diagCol+p]==0 && countBoard[diagRow-1-p][diagCol+1+p]==0 && countBoard[diagRow-2-p][diagCol+2+p]==0 && countBoard[diagRow-3-p][diagCol+3+p]==0){//If the pair is empty, skip. 0 Points
+				//Do nothing
+			}
+			else{//If its not empty or has a opp taken space, process pair for links
+				pairType = diagonalPairCalc(countBoard,diagRow-p,diagCol+p,1);
+				if(pairType < 4){
+					linkTracker[i+7][pairType] += 1;
+					if(pairType==0 && self){return linkTracker;} //If we find a triple placeable for self, were done. Its a win.
+				}
+			}
+		}
+	}
+	for(i=0;i<6;i+=1){//Right diagonals checker
+		diagRow = diagCountOrderRight[i][0]; //Save the row so I dont  have to type that every time
+		diagCol = diagCountOrderRight[i][1]; //Save the col so I dont have to type that every time
+		for(p=0; p<diagCountOrderRight[i][2]; p+=1){//Do this for each pair in the diagonal
+				if(countBoard[diagRow-p][diagCol-p]==opp || countBoard[diagRow-1-p][diagCol-1-p]==opp || countBoard[diagRow-2-p][diagCol-2-p]==opp || countBoard[diagRow-3-p][diagCol-3-p]==opp){//If any spaces are taken by the opponent, skip pair
+					//Do nothing
+				}
+				else if (countBoard[diagRow-p][diagCol-p]==0 && countBoard[diagRow-1-p][diagCol-1-p]==0 && countBoard[diagRow-2-p][diagCol-2-p]==0 && countBoard[diagRow-3-p][diagCol-3-p]==0){//If the pair is empty, skip. 0 Points
+					//Do nothing
+				}
+				else{//If its not empty or has a opp taken space, process pair for links
+					pairType = diagonalPairCalc(countBoard,diagRow-p,diagCol-p,-1);
+					if(pairType < 4){
+						linkTracker[i+13][pairType] += 1;
+						if(pairType==0 && self){return linkTracker;} //If we find a triple placeable for self, were done. Its a win.
+					}
+				}
+		}
+	}
+
+
+
+	//Return the respective points
+	return linkTracker;
 }
 
-function blackBotHardChoice(){
-	fillSimBoard();
-	var dont = []
-	var points = [0,0,0,0,0,0,0];
-	var pointChoice = 7;
-	var proxyTurn = turn;
-	var turnsAhead = 10;
-	var blackCoinSim = false;
-	var simSlot = 0;
-	var pattern = [];
-	var count = 0;
-	if(turn == 1){
-		return 3;
+function horizontalPairCalc(countBoard,r,c){//Given a board and where to start a pair, it will check which of the 4 link types it has, horizontal
+	var filled = 0; //Will track how many slots are non-empty in the pair. Will not check color because this function should only be called for pure pairs
+	var pairType = 4; //4 will represent a single pair. This will counts as no points
+	var placeable = true; //Assume the pair is placeable until we hit an empty slot thats not
+	//0 is Triple Place, 1 is Double Place, 2 is Triple Non-Place, 3 is Double Non-Place
+	//Pair Types match with linkCounts's array positions
+
+	if(r==5){//Dont bother with non-placeble trip for row 5. Thisll just cause an error. Row 5 will only carry placeables
+		for(i=0;i<4;i+=1){//i will represent how far we are from the original column+
+			if(countBoard[r][c+i]!=0){filled += 1;}//If checked slot is filled, add 1 to filled
+		}
 	}
-	else{
-		for(l = 0; l < 7; l+=1){
-			simDrop(l, true);
-			if(test4win(simBoard)){
-				return l;
-			}
-			else{fillSimBoard();}
+	else{//Rows above 5 will need to check if an empty slot is non-placeable
+		for(i=0;i<4;i+=1){//i will represent how far we are from the original column
+			if(countBoard[r][c+i]!=0){filled += 1;}//If checked slot is filled, add 1 to filled
+			else if(countBoard[r+1][c+i] == 0){placeable = false;}//If the slot is empty and the slot below it is also empty, the pair is non-placeable
 		}
-		for(l = 0; l < 7; l+=1){
-			simDrop(l, false);
-			if(test4win(simBoard)){
-				return l;
-			}
-			else{fillSimBoard();}
+	}
+
+	if(filled == 3 && placeable){pairType = 0;}//If there are exactly 3 filled slots and the non-place trip isnt hit, Triple Place
+	else if(filled == 2 && placeable){pairType = 1;} //Double Place
+	else if(filled == 3 && !placeable){pairType = 2;} //Triple Non-Place
+	else if(filled == 2 && !placeable){pairType = 3;} //Double Non-Place
+	else if(filled == 1){pairType = 4;}//Theres only 1 slot in here. Not significant
+	else{pairType = 5; console.log('horizontalPairCalc was called for an invalid pair. Filled = ' + filled + ', Slot [' + r + ',' + c + ']')}//Somethings broken
+
+	return pairType;
+}
+
+function diagonalPairCalc(countBoard,r,c,dir){//Given a board and where to start a pair, it will check which of the 4 link types it has, diagonal
+	//dir will be 1 for left to right, -1 for right to left
+	var filled = 0; //Will track how many slots are non-empty in the pair. Will not check color because this function should only be called for pure pairs
+	var pairType = 5; //5 is an error. We should hit one of the 4 conditions
+	var placeable = true; //Assume the pair is placeable until we hit an empty slot thats not
+	//0 is Triple Place, 1 is Double Place, 2 is Triple Non-Place, 3 is Double Non-Place
+	//Pair Types match with linkCounts's array positions
+
+	for(j=0;j<4;j+=1){//j will represent how far we are from the original column
+		if(countBoard[r-j][c+(j*dir)]!=0){filled += 1;}//If checked slot is filled, add 1 to filled
+		else if(r-j == 5){}//If were on the bottom row, dont check if an empty is placeable
+		else if(countBoard[r-j+1][c+(j*dir)] == 0){placeable = false;}//If the slot is empty and the slot below it is also empty, the pair is non-placeable
+	}
+
+	if(filled == 3 && placeable){pairType = 0;}//If there are exactly 3 filled slots and the non-place trip isnt hit, Triple Place
+	else if(filled == 2 && placeable){pairType = 1;} //Double Place
+	else if(filled == 3 && !placeable){pairType = 2;} //Triple Non-Place
+	else if(filled == 2 && !placeable){pairType = 3;} //Double Non-Place
+	else if(filled == 1){pairType = 4;}//Theres only 1 slot in here. Not significant
+	else{pairType = 5; console.log('diagonalPairCalc was called for an invalid pair. Filled = ' + filled + ', Slot [' + r + ',' + c + ']')}//Somethings broken
+
+	return pairType;
+}
+
+function adjOpenCount(countBoard,color){ //countBoard is input board to process, color is the color of you pieces. 1 for red, 2 for black
+	var adjPoints = 0; //Will return as points for Adjacent placeable spots
+	var r = 0;	//Track the row we're one
+	var place = 0; //0 means we havent found the bottom of the column, 1 means we did
+	
+	//Board Processing
+	for(c=0; c<7; c+=1){ //Repeat for each column
+		r = 0;
+		place = 0; //Reset place to 0
+		if(countBoard[0][c] != 0){ //If the columns full dont bother
+			place == 1
 		}
-		for(l = 0; l < 7; l+=1){
-			simDrop(l, true);
-			simDrop(l, false);
-			if(test4win(simBoard)){
-				dont.push(l);
-			}
-			fillSimBoard();
-		}
-		fillSimBoard();
-		for(testingSlot = 0; testingSlot < 7; testingSlot++){
-			fillSimBoard();
-			if(turn < 10){pattern = [0,0,0,0,0];}
-			else if(turn < 27){pattern = [0,0,0,0,0,0];}
-			else if(turn < 34){pattern = [0,0,0,0,0,0,0];}
-			else{
-				pattern = [];
-				for(l = 0; l < 42-turn; l++){
-					pattern.push(0);
-				}
-			}//turns order
+		else{//This will add points if there is a placeable piece in the column
 			
-			while(pattern[0] < 7){
-				fillSimBoard();
-				simDrop(testingSlot,true);
-				blackCoinSim = false;
-				for(turnSim = 0; turnSim < pattern.length; turnSim++){
-					if(simBoard[0][pattern[turnSim]] != 0){
-						break;
-					}
-					else{
-						simDrop(pattern[turnSim],blackCoinSim);
-						if(test4win(simBoard)){
-							if(blackCoinSim){points[testingSlot] += winPoints;}
-							else{points[testingSlot] -= lossPoints;}
-							break;
-						}
-						blackCoinSim = !blackCoinSim;
-					}
+			//Bottom finder. Increase r by 1 until we hit the bottom or hit a piece
+			while(place == 0 && r < 5){ 
+				if(countBoard[r+1][c] > 0){ //If below piece is filled, stop. R will be bottom
+					place = 1;
 				}
-				if(pattern[pattern.length - 1] < 6){pattern[pattern.length - 1]++;}
-				else{
-					count = 1;
-					while(pattern[pattern.length - count] == 6){
-						pattern[pattern.length - count] = 0;
-						count++;
-						if(count == pattern.length) {break;}
-					}
-					pattern[pattern.length - count]++;
+				else{//If not, keep adding 1 to r and try again 
+					r+=1;
 				}
 			}
-		}
-		fillSimBoard();
-		for(l = 0; l<7; l++){
-			if(board[0][l] == 0 && !dont.includes(l)){pointChoice = l; break;}
-		}
-		if(pointChoice == 7){
-			for(l = 0; l<7; l++){
-			if(board[0][l] == 0){pointChoice = l; break;}
+			
+			//Now we found bottom, count adjacent pieces of your color
+			//Check left side of test piece
+			if (c != 0){//These will check the column to the left of the tested piece. Skip if on column 0
+				if(countBoard[r][c-1] == color){//If piece to left of tested piece matches, add a point
+					adjPoints+=1;
+				}
+				if(r != 5){//This is checking below left piece so skip if piece is at very bottom.
+					if(countBoard[r+1][c-1] == color){//If below left piece matches your color, add a point
+						adjPoints+=1;
+					}
+				}
+				if(r != 0){//This is checking top left piece so skip if piece is at very top.
+					if(countBoard[r-1][c-1] == color){//If top left piece matches your color, add a point
+						adjPoints+=1;
+					}
+				}
 			}
-		}
-		for(maxi = 0; maxi < 7; maxi+=1){
-			if((points[maxi] > points[pointChoice]) && (!dont.includes(maxi)) && (board[0][maxi] == 0)){
-				pointChoice = maxi;
+			
+			//Check above and below test piece
+			if(r != 5){//This is checking below piece so skip if piece is at very bottom.
+				if(countBoard[r+1][c] == color){//If below piece matches your color, add a point
+					adjPoints+=1;
+				}
 			}
+			if(r != 0){//This is checking top piece so skip if piece is at very top.
+				if(countBoard[r-1][c] == color){//If top piece matches your color, add a point
+					adjPoints+=1;
+				}
+			}
+			
+			//Check right side of test piece
+			if (c != 6){//These will check the column to the right of the tested piece. Skip if on column 6
+				if(countBoard[r][c+1] == color){//If piece to right of tested piece matches, add a point
+					adjPoints+=1;
+				}
+				if(r != 5){//This is checking below right piece so skip if piece is at very bottom.
+					if(countBoard[r+1][c+1] == color){//If below right piece matches your color, add a point
+						adjPoints+=1;
+					}
+				}
+				if(r != 0){//This is checking top right piece so skip if piece is at very top.
+					if(countBoard[r-1][c+1] == color){//If top right piece matches your color, add a point
+						adjPoints+=1;
+					}
+				}
+			}
+			//End of point adding for column
 		}
-		return pointChoice;
+		//Do nothing after adding points for column
 	}
+	//End of point adding for sumbitted board. Now need to return the outcome.
+	return adjPoints;
 }
 
-
-function redBotEasyChoice(){
-	fillSimBoard();
-	var dont = []
-	var points = [0,0,0,0,0,0,0];
-	var pointChoice = 0;
-	for(l = 0; l < 7; l+=1){
-		simDrop(l, false);
-		if(test4win(simBoard)){
-			return l;
-		}
-		else{fillSimBoard();}
-	}
-	for(l = 0; l < 7; l+=1){
-		simDrop(l, true);
-		if(test4win(simBoard)){
-			return l;
-		}
-		else{fillSimBoard();}
-	}
-	for(l = 0; l < 7; l+=1){
-		simDrop(l, false);
-		simDrop(l, true);
-		if(test4win(simBoard)){
-			dont.push(l);
-		}
-		fillSimBoard();
-	}
-	fillSimBoard();
-	for(l = 0; l < 7; l+=1){
-		if(simBoard[0][l] != 0){
-			points[l] = 0;
-		}
-		else{
-			simDrop(l, false);
-			if(dont.includes(l)){
-				points[l] = 0;
-			}
-			else{
-				for(rr = 1; rr < 5; rr+=1){
-					for(cc = 1; cc < 6; cc+=1){
-						if(simBoard[rr][cc] == 2){
-							if(simBoard[rr + 1][cc] == 2){
-								points[l] += 2;
-							}
-							else if(simBoard[rr + 1][cc] == 1){
-								points[l] += 1;
-							}
-							
-							if(simBoard[rr + 1][cc - 1] == 2){
-								points[l] += 2;
-							}
-							else if(simBoard[rr + 1][cc - 1] == 1){
-								points[l] += 1;
-							}
-							
-							if(simBoard[rr + 1][cc + 1] == 2){
-								points[l] += 2;
-							}
-							else if(simBoard[rr + 1][cc + 1] == 1){
-								points[l] += 1;
-							}
-							
-							if(simBoard[rr][cc - 1] == 2){
-								points[l] += 2;
-							}
-							else if(simBoard[rr][cc - 1] == 1){
-								points[l] += 1;
-							}
-							
-							if(simBoard[rr][cc + 1] == 2){
-								points[l] += 2;
-							}
-							else if(simBoard[rr][cc + 1] == 1){
-								points[l] += 1;
-							}
-								
-							if(simBoard[rr - 1][cc] == 2){
-								points[l] += 2;
-							}
-							else if(simBoard[rr - 1][cc] == 1){
-								points[l] += 1;
-							}
-								
-							if(simBoard[rr - 1][cc - 1] == 2){
-								points[l] += 2;
-							}
-							else if(simBoard[rr - 1][cc - 1] == 1){
-								points[l] += 1;
-							}
-							
-							if(simBoard[rr - 1][cc + 1] == 2){
-								points[l] += 2;
-							}
-							else if(simBoard[rr - 1][cc + 1] == 1){
-								points[l] += 1;
-							}
-						}
-					}
-				}
-				for(cc = 1; cc < 6; cc+=1){
-					if(simBoard[5][cc] == 2){
-						if(simBoard[5][cc - 1] == 2){
-							points[l] += 2;
-						}
-						else if(simBoard[5][cc - 1] == 1){
-							points[l] += 1;
-						}
-							
-						if(simBoard[4][cc - 1] == 2){
-							points[l] += 2;
-						}
-						else if(simBoard[4][cc - 1] == 1){
-							points[l] += 1
-						}
-							
-						if(simBoard[4][cc] == 2){
-							points[l] += 2;
-						}
-						else if(simBoard[4][cc] == 1){
-							points[l] += 1;
-						}
-							
-						if(simBoard[4][cc + 1] == 1){
-							points[l] += 1;
-						}
-						else if(simBoard[4][cc + 1] == 2){
-							points[l] += 2;
-						}
-							
-						if(simBoard[5][cc + 1] == 1){
-							points[l] += 1;
-						}
-						else if(simBoard[5][cc + 1] == 2){
-							points[l] += 2;
-						}
-					}
-						
-						
-					if(simBoard[0][cc] == 2){
-						if(simBoard[0][cc - 1] == 1){
-							points[l] += 1;
-						}
-						else if(simBoard[0][cc - 1] == 2){
-							points[l] += 2;
-						}
-							
-						if(simBoard[1][cc - 1] == 1){
-							points[l] += 1;
-						}
-						else if(simBoard[1][cc - 1] == 2){
-							points[l] += 2;
-						}
-							
-						if(simBoard[1][cc] == 1){
-							points[l] += 1;
-						}
-						else if(simBoard[1][cc] == 2){
-							points[l] += 2;
-						}
-							
-						if(simBoard[1][cc + 1] == 1){
-							points[l] += 1;
-						}
-						else if(simBoard[1][cc + 1] == 2){
-							points[l] += 2;
-						}
-							
-						if(simBoard[0][cc + 1] == 1){
-							points[l] += 1;
-						}
-						else if(simBoard[0][cc + 1] == 2){
-							points[l] += 2;
-						}
-					}
-				}
-				for(rr = 1; rr < 5; rr+=1){
-					if(simBoard[rr][0] == 2){
-						if(simBoard[rr - 1][0] == 2){
-							points[l]+=2;
-						}
-						else if(simBoard[rr - 1][0] == 1){
-							points[l]+=1;
-						}
-						if(simBoard[rr - 1][1] == 2){
-							points[l]+=2;
-						}
-						else if(simBoard[rr - 1][1] == 1){
-							points[l]+=1;
-						}
-						if(simBoard[rr][1] == 2){
-							points[l]+=2;
-						}
-						else if(simBoard[rr][1] == 1){
-							points[l]+=1;
-						}
-						if(simBoard[rr + 1][1] == 2){
-							points[l]+=2;
-						}
-						else if(simBoard[rr + 1][1] == 1){
-							points[l]+=1;
-						}
-						if(simBoard[rr + 1][0] == 2){
-							points[l]+=2;
-						}
-						else if(simBoard[rr + 1][0] == 1){
-							points[l]+=1;
-							}
-						}
-						
-						
-					if(simBoard[rr][6] == 2){
-						if(simBoard[rr - 1][6] == 2){
-							points[l]+=2;
-						}
-						else if(simBoard[rr - 1][6] == 1){
-							points[l]+=1;
-						}
-						if(simBoard[rr - 1][5] == 2){
-							points[l]+=2;
-						}
-						else if(simBoard[rr - 1][5] == 1){
-							points[l]+=1;
-						}
-						if(simBoard[rr][5] == 2){
-							points[l]+=2;
-						}
-						else if(simBoard[rr][5] == 1){
-							points[l]+=1;
-						}
-						if(simBoard[rr + 1][5] == 2){
-							points[l]+=2;
-						}
-						else if(simBoard[rr + 1][5] == 1){
-							points[l]+=1;
-						}
-						if(simBoard[rr + 1][6] == 2){
-							points[l]+=2;
-						}
-						else if(simBoard[rr + 1][6] == 1){
-							points[l]+=1;
-						}
-					}
-				}
-				if(simBoard[0][0] == 2){
-					if(simBoard[0][1] == 2){
-						points[l] += 2;
-					}
-					else if(simBoard[0][1] == 1){
-						points[l] += 1;
-					}
-					if(simBoard[1][1] == 2){
-						points[l] += 2;
-					}
-					else if(simBoard[1][1] == 1){
-						points[l] += 1;
-					}
-					if(simBoard[1][0] == 2){
-						points[l] += 2;
-					}
-					else if(simBoard[1][0] == 1){
-						points[l] += 1;
-					}
-				}
-				if(simBoard[0][6] == 2){
-					if(simBoard[0][5] == 2){
-						points[l] += 2;
-					}
-					else if(simBoard[0][5] == 1){
-						points[l] += 1;
-					}
-					if(simBoard[1][5] == 2){
-						points[l] += 2;
-					}
-					else if(simBoard[1][5] == 1){
-						points[l] += 1;
-					}
-					if(simBoard[1][6] == 2){
-						points[l] += 2;
-					}
-					else if(simBoard[1][6] == 1){
-						points[l] += 1;
-					}
-				}
-				if(simBoard[5][0] == 2){
-					if(simBoard[5][1] == 2){
-						points[l] += 2;
-					}
-					else if(simBoard[5][1] == 1){
-						points[l] += 1;
-					}
-					if(simBoard[4][1] == 2){
-						points[l] += 2;
-					}
-					else if(simBoard[4][1] == 1){
-						points[l] += 1;
-					}
-					if(simBoard[4][0] == 2){
-						points[l] += 2;
-					}
-					else if(simBoard[4][0] == 1){
-						points[l] += 1;
-					}
-				}
-				if(simBoard[5][6] == 2){
-					if(simBoard[5][5] == 2){
-						points[l] += 2;
-					}
-					else if(simBoard[5][5] == 1){
-						points[l] += 1;
-					}
-					if(simBoard[4][5] == 2){
-						points[l] += 2;
-					}
-					else if(simBoard[4][5] == 1){
-						points[l] += 1;
-					}
-					if(simBoard[4][6] == 2){
-						points[l] += 2;
-					}
-					else if(simBoard[4][6] == 1){
-						points[l] += 1;
-					}
-				}
-			}	
-		}
-		fillSimBoard();
-	}
-	for(l = 0; l<7; l++){
-			if(board[0][l] == 0 && !dont.includes(l)){pointChoice = l; break;}
-		}
-		if(pointChoice == 7){
-			for(l = 0; l<7; l++){
-				if(board[0][l] == 0){pointChoice = l; break;}
-			}
-		}
-		for(maxi = 0; maxi < 7; maxi+=1){
-			if((points[maxi] > points[pointChoice]) && (!dont.includes(maxi)) && (board[0][maxi] == 0)){
-				pointChoice = maxi;
-			}
-		}
-	return pointChoice;
-	
-}
-function redBotMedChoice(){
-	fillSimBoard();
-	var dont = []
-	var points = [0,0,0,0,0,0,0];
-	var pointChoice = 7;
-	var proxyTurn = turn;
-	var turnsAhead = 10;
-	var blackCoinSim = false;
-	var simSlot = 0;
-	var pattern = [];
-	var count = 0;
-	if(turn == 1){
-		return 2;
-	}
-	else{
-		for(l = 0; l < 7; l+=1){
-			simDrop(l, false);
-			if(test4win(simBoard)){
-				return l;
-			}
-			else{fillSimBoard();}
-		}
-		for(l = 0; l < 7; l+=1){
-			simDrop(l, true);
-			if(test4win(simBoard)){
-				return l;
-			}
-			else{fillSimBoard();}
-		}
-		for(l = 0; l < 7; l+=1){
-			simDrop(l, false);
-			simDrop(l, true);
-			if(test4win(simBoard)){
-				dont.push(l);
-			}
-			fillSimBoard();
-		}
-		fillSimBoard();
-		for(testingSlot = 0; testingSlot < 7; testingSlot++){
-			fillSimBoard();
-			pattern = [0,0,0]; //turns order
-			while(pattern[0] < 7){
-				fillSimBoard();
-				simDrop(testingSlot,false);
-				blackCoinSim = true;
-				for(turnSim = 0; turnSim < pattern.length; turnSim++){
-					if(simBoard[0][pattern[turnSim]] != 0){
-						break;
-					}
-					else{
-						simDrop(pattern[turnSim],blackCoinSim);
-						if(test4win(simBoard)){
-							if(!blackCoinSim){points[testingSlot] += 1}
-							else{points[testingSlot] -= 1}
-							break;
-						}
-						blackCoinSim = !blackCoinSim;
-					}
-				}
-				if(pattern[pattern.length - 1] < 6){pattern[pattern.length - 1]++;}
-				else{
-					count = 1;
-					while(pattern[pattern.length - count] == 6){
-						pattern[pattern.length - count] = 0;
-						count++;
-						if(count == pattern.length) {break;}
-					}
-					pattern[pattern.length - count]++;
-				}
-			}
-		}
-		fillSimBoard();
-		for(l = 0; l<7; l++){
-			if(board[0][l] == 0 && !dont.includes(l)){pointChoice = l; break;}
-		}
-		if(pointChoice == 7){
-			for(l = 0; l<7; l++){
-				if(board[0][l] == 0){pointChoice = l; break;}
-			}
-		}
-		for(maxi = 0; maxi < 7; maxi+=1){
-			if((points[maxi] > points[pointChoice]) && (!dont.includes(maxi)) && (board[0][maxi] == 0)){
-				pointChoice = maxi;
-			}
-		}
-		return pointChoice;
-	}
-	
-}
-function redBotHardChoice(){
-	fillSimBoard();
-	var dont = []
-	var points = [0,0,0,0,0,0,0];
-	var pointChoice = 7;
-	var proxyTurn = turn;
-	var turnsAhead = 10;
-	var blackCoinSim = false;
-	var simSlot = 0;
-	var pattern = [];
-	var count = 0;
-	if(turn == 1){
-		return 2;
-	}
-	else{
-		for(l = 0; l < 7; l+=1){
-			simDrop(l, false);
-			if(test4win(simBoard)){
-				return l;
-			}
-			else{fillSimBoard();}
-		}
-		for(l = 0; l < 7; l+=1){
-			simDrop(l, true);
-			if(test4win(simBoard)){
-				return l;
-			}
-			else{fillSimBoard();}
-		}
-		for(l = 0; l < 7; l+=1){
-			simDrop(l, false);
-			simDrop(l, true);
-			if(test4win(simBoard)){
-				dont.push(l);
-			}
-			fillSimBoard();
-		}
-		fillSimBoard();
-		for(testingSlot = 0; testingSlot < 7; testingSlot++){
-			fillSimBoard();
-			if(turn < 10){pattern = [0,0,0,0,0];}
-			else if(turn < 27){pattern = [0,0,0,0,0,0];}
-			else if(turn < 32){pattern = [0,0,0,0,0,0,0];}
-			else if(turn < 32){pattern = [0,0,0,0,0,0,0,0];}
-			else{
-				pattern = [];
-				for(l = 0; l < 42-turn; l++){
-					pattern.push(0);
-				}
-			}//turns order
-			while(pattern[0] < 7){
-				fillSimBoard();
-				simDrop(testingSlot,false);
-				blackCoinSim = true;
-				for(turnSim = 0; turnSim < pattern.length; turnSim++){
-					if(simBoard[0][pattern[turnSim]] != 0){
-						break;
-					}
-					else{
-						simDrop(pattern[turnSim],blackCoinSim);
-						if(test4win(simBoard)){
-							if(!blackCoinSim){points[testingSlot] += winPoints;}
-							else{points[testingSlot] -= lossPoints;}
-							break;
-						}
-						blackCoinSim = !blackCoinSim;
-					}
-				}
-				if(pattern[pattern.length - 1] < 6){pattern[pattern.length - 1]++;}
-				else{
-					count = 1;
-					while(pattern[pattern.length - count] == 6){
-						pattern[pattern.length - count] = 0;
-						count++;
-						if(count == pattern.length) {break;}
-					}
-					pattern[pattern.length - count]++;
-				}
-			}
-		}
-		fillSimBoard();
-		for(l = 0; l<7; l++){
-			if(board[0][l] == 0 && !dont.includes(l)){pointChoice = l; break;}
-		}
-		if(pointChoice == 7){
-			for(l = 0; l<7; l++){
-				if(board[0][l] == 0){pointChoice = l; break;}
-			}
-		}
-		for(maxi = 0; maxi < 7; maxi+=1){
-			if((points[maxi] > points[pointChoice]) && (!dont.includes(maxi)) && (board[0][maxi] == 0)){
-				pointChoice = maxi;
-			}
-		}
-		return pointChoice;
-	}
-}
 </script>
 </body>
 </html>
