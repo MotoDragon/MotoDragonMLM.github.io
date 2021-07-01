@@ -227,13 +227,14 @@ function drop(col){//Updates the board with the legally selected drop
 }
 
 function playerMoves(col){
-	document.getElementById("log").innerHTML = '';
+	//document.getElementById("log").innerHTML = '';
 	if(board[0][col] == 0){
 		drop(col);
 		if(players == 1 && test4win(board) == 0){
 			botMoves();
 		}
 	}
+	document.getElementById("log").innerHTML = '';
 }
 
 function simDrop(col, color, givenBoard){//Simulates a drop for a given board, color, and column
@@ -348,7 +349,7 @@ function botChoice(turnsAhead,color){
 	allScoresC = scoreEachPattern(simBoard,turnsAhead,color)
 	options = processScores(allScoresC,turnsAhead);
 	theChoice = finalChoice(options);
-	
+	if(theChoice == 'w'){document.getElementById('log').innerHTML = 'Bot says you lose'}
 	return theChoice;
 }
 
@@ -552,17 +553,14 @@ function finalChoice(selection){//This will make the final bot selection. If it 
 		if(returnL){return 0;} //If all of the values are wins, just output win
 	}
 	else if(value == 'w'){//If the first value is l, just return l
-		document.getElementById("log").innerHTML = "The bot thinks you already lost";
 		return 0;
 	}
 	//All i's should be filtered by now
 	while(start < 7){ //If we havent returned yet, process the rest
 		if(selection[start] == 'w'){//First check if the next value is l. Return if so
-			document.getElementById("log").innerHTML = 'GG bruv'
 			return start;
 		}//If its not l, compare below
 		else if(value == 'w'){
-			document.getElementById("log").innerHTML = 'Better luck next time. It knows.'
 			return slot;
 		}
 		else if(value == 'l' && selection[start] != 'l' && selection[start] != 'i'){//If its not l, compare. Special process for w
